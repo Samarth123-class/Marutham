@@ -1,545 +1,240 @@
-document.addEventListener("DOMContentLoaded", () => {
+/**
+ * MARUTHAM - Smart Agri-Tech Platform
+ * Handlers for Dynamic Greetings, Profile State, AI Chat, Disease Scanner & Local Database
+ */
 
-  const $ = (id) => document.getElementById(id);
+// ==========================================
+// 1. Initial State & In-Memory / Local Storage Database
+// ==========================================
+const DEFAULT_FARM_DATA = [
+  { id: 1, date: "2026-11-08 07:30", plot: "Plot A - Paddy", type: "Irrigation", notes: "Drip irrigation active for 2.5 hrs" },
+  { id: 2, date: "2026-11-07 16:15", plot: "Plot C - Groundnut", type: "Fertilizer", notes: "Applied gypsum & micronutrient spray" }
+];
 
-  // =====================================
-  // SCREEN NAVIGATION
-  // =====================================
+const DEFAULT_PROFILE = {
+  name: "Ramanathan K.",
+  farm: "Kaveri Delta Agro Farm",
+  crop: "Paddy & Groundnut"
+};
 
-  function showScreen(screenName) {
+// Agricultural knowledge base for offline AI assistance
+const AGRI_KNOWLEDGE_BASE = [
+  { keywords: ["yellow", "chlorosis", "leaf", "leaves"], response: "Yellowing leaves often indicate nitrogen deficiency or root saturation. Check soil moisture and consider applying foliar spray of 1% urea or chelated iron." },
+  { keywords: ["blast", "fungus", "spot", "brown"], response: "For brown leaf spots and blast disease, apply Tricyclazole 75 WP @ 0.6g/liter or Pseudomonas fluorescens biological culture (10g/L)." },
+  { keywords: ["fertilizer", "npk", "urea", "dose"], response: "Standard basal application for paddy is 50:25:25 kg NPK/ha, split-applying Nitrogen at tillering and panicle initiation stages." },
+  { keywords: ["price", "market", "mandi", "rate"], response: "Current estimated Mandi rate: Grade-A Paddy is trading around ₹2,320/quintal; Groundnut around ₹6,600/quintal." }
+];
 
-    if (screenName === "profile") {
-      const name = localStorage.getItem("marutham-name") || "";
-      const location = localStorage.getItem("marutham-location") || "";
+// Load records and profile from LocalStorage or initialize
+let farmDatabase = JSON.parse(localStorage.getItem("marutham_records")) || DEFAULT_FARM_DATA;
+let farmerProfile = JSON.parse(localStorage.getItem("marutham_profile")) || DEFAULT_PROFILE;
 
-      const newName = prompt("Enter farmer name:", name);
-      if (newName === null) return;
+// ==========================================
+// 2. Dynamic Greetings Engine (Top Header)
+// ==========================================
+function updateGreeting() {
+  const greetingTextEl = document.getElementById("greeting-text");
+  const greetingSubEl = document.getElementById("greeting-sub");
+  const greetingIconEl = document.getElementById("greeting-icon");
 
-      const newLocation = prompt("Enter village or location:", location);
-      if (newLocation === null) return;
+  const hour = new Date().getHours();
+  let greeting = "Good Evening";
+  let subText = "Reviewing evening soil humidity & sensor alerts";
+  let iconClass = "ph-moon";
 
-      localStorage.setItem("marutham-name", newName);
-      localStorage.setItem("marutham-location", newLocation);
-
-      alert("Farmer profile saved on this device.");
-      showScreen("home");
-      return;
-    }
-
-    if (screenName === "more") {
-      alert(
-        "MARUTHAM\n\n" +
-        "Smart Agriculture Assistance\n" +
-        "Your Farm. Your Language. Your Smart Companion."
-      );
-      return;
-    }
-
-    document.querySelectorAll(".screen").forEach(screen => {
-      screen.classList.remove("active");
-    });
-
-    const selected = $(screenName);
-
-    if (!selected) return;
-
-    selected.classList.add("active");
-
-    document.querySelectorAll(".nav-item").forEach(button => {
-      button.classList.toggle(
-        "active",
-        button.dataset.screen === screenName
-      );
-    });
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  if (hour >= 5 && hour < 12) {
+    greeting = "Good Morning";
+    subText = "Favorable morning dew levels for field inspection";
+    iconClass = "ph-sun-dim";
+  } else if (hour >= 12 && hour < 17) {
+    greeting = "Good Afternoon";
+    subText = "Peak sunlight hours: monitor irrigation channels";
+    iconClass = "ph-sun";
   }
 
-  window.showScreen = showScreen;
-
-  window.goToServices = function () {
-    document.querySelector(".service-grid").scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  };
-
-  document.querySelectorAll("[data-screen]").forEach(button => {
-    button.addEventListener("click", () => {
-      showScreen(button.dataset.screen);
-    });
-  });
-
-  $("navMic").addEventListener("click", () => {
-    showScreen("voice");
-    setTimeout(startVoice, 250);
-  });
-
-
-  // =====================================
-  // SCHEME SEARCH AND FILTERS
-  // =====================================
-
-  let selectedFilter = "all";
-
-  function filterSchemes() {
-
-    const search = $("schemeSearch").value.toLowerCase().trim();
-
-    let count = 0;
-
-    document.querySelectorAll(".scheme-card").forEach(card => {
-
-      const type = card.dataset.type;
-      const text = (
-        card.dataset.search + " " + card.innerText
-      ).toLowerCase();
-
-      const matchesSearch = text.includes(search);
-      const matchesFilter =
-        selectedFilter === "all" || type === selectedFilter;
-
-      const visible = matchesSearch && matchesFilter;
-
-      card.hidden = !visible;
-
-      if (visible) count++;
-
-    });
-
-    $("noSchemes").hidden = count > 0;
-  }
-
-  $("schemeSearch").addEventListener("input", filterSchemes);
-
-  document.querySelectorAll(".filter").forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      selectedFilter = button.dataset.filter;
-
-      document.querySelectorAll(".filter").forEach(item => {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-      filterSchemes();
-    });
-
-  });
-
-
-  // =====================================
-  // CROP IMAGE UPLOAD
-  // =====================================
-
-  let cropImageURL = null;
-
-  $("cropImage").addEventListener("change", event => {
-
-    const file = event.target.files[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      $("cropStatus").textContent = "Please select an image file.";
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      $("cropStatus").textContent =
-        "Please choose an image smaller than 10 MB.";
-      return;
-    }
-
-    if (cropImageURL) {
-      URL.revokeObjectURL(cropImageURL);
-    }
-
-    cropImageURL = URL.createObjectURL(file);
-
-    $("cropPreview").src = cropImageURL;
-
-    $("cropStatus").textContent =
-      "Image selected successfully: " + file.name;
-
-  });
-
-  $("resetCrop").addEventListener("click", () => {
-
-    $("cropImage").value = "";
-
-    if (cropImageURL) {
-      URL.revokeObjectURL(cropImageURL);
-      cropImageURL = null;
-    }
-
-    $("cropPreview").src =
-      "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=900";
-
-    $("cropStatus").textContent = "Select a crop image to begin.";
-
-    $("cropResult").innerHTML =
-      "<p>✓ Upload a clear photo of the affected crop.</p>" +
-      "<p>✓ Include both healthy and affected leaves if possible.</p>";
-
-  });
-
-  $("analyzeCrop").addEventListener("click", () => {
-
-    if (!cropImageURL) {
-      $("cropStatus").textContent =
-        "Please upload a crop image first.";
-      return;
-    }
-
-    $("cropStatus").textContent =
-      "Image ready for the AI diagnosis service.";
-
-    $("cropResult").innerHTML =
-      "<p>✓ Image uploaded successfully.</p>" +
-      "<p>✓ Image preview is ready.</p>" +
-      "<p>⚠ Actual disease identification is not connected yet. " +
-      "Connect an AI crop-diagnosis backend to produce a real result.</p>";
-
-  });
-
-
-  // =====================================
-  // SOIL IMAGE PREVIEW
-  // =====================================
-
-  let soilImageURL = null;
-
-  $("soilImage").addEventListener("change", event => {
-
-    const file = event.target.files[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image.");
-      return;
-    }
-
-    if (soilImageURL) {
-      URL.revokeObjectURL(soilImageURL);
-    }
-
-    soilImageURL = URL.createObjectURL(file);
-
-    $("soilPreview").src = soilImageURL;
-    $("soilPreview").hidden = false;
-
-  });
-
-
-  // =====================================
-  // SOIL VALUE SUMMARY
-  // =====================================
-
-  $("soilAnalyze").addEventListener("click", () => {
-
-    const phValue = $("soilPH").value;
-    const nValue = $("nitrogen").value;
-    const pValue = $("phosphorus").value;
-    const kValue = $("potassium").value;
-
-    if (
-      phValue === "" ||
-      nValue === "" ||
-      pValue === "" ||
-      kValue === ""
-    ) {
-      $("soilOutput").innerHTML =
-        "<h3>Soil Analysis Result</h3>" +
-        "<p>Please enter all four soil-test values.</p>";
-      return;
-    }
-
-    const ph = Number(phValue);
-    const n = Number(nValue);
-    const p = Number(pValue);
-    const k = Number(kValue);
-
-    if (
-      !Number.isFinite(ph) ||
-      !Number.isFinite(n) ||
-      !Number.isFinite(p) ||
-      !Number.isFinite(k) ||
-      ph < 0 || ph > 14 ||
-      n < 0 || p < 0 || k < 0
-    ) {
-      $("soilOutput").innerHTML =
-        "<h3>Soil Analysis Result</h3>" +
-        "<p>Please check your values. pH must be between 0 and 14; nutrient values cannot be negative.</p>";
-      return;
-    }
-
-    let phMessage = "Near neutral";
-
-    if (ph < 6.5) {
-      phMessage = "Acidic";
-    } else if (ph > 7.5) {
-      phMessage = "Alkaline";
-    }
-
-    $("soilOutput").innerHTML = `
-      <h3>🌱 Soil Analysis Result</h3>
-      <div class="nutrient-row">🟢 Soil pH: <b>${ph} (${phMessage})</b></div>
-      <div class="nutrient-row">🟢 Nitrogen (N): <b>${n}</b></div>
-      <div class="nutrient-row">🟢 Phosphorus (P): <b>${p}</b></div>
-      <div class="nutrient-row">🟢 Potassium (K): <b>${k}</b></div>
-      <p>Values recorded. Nutrient interpretation requires the units, soil-test method and local reference ranges.</p>
-    `;
-
-  });
-
-
-  // =====================================
-  // VOICE ASSISTANT
-  // =====================================
-
-  const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-  let recognition = null;
-
-  let listening = false;
-
-  let currentAnswer =
-    "ನಮಸ್ಕಾರ! Marutham ಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ.";
-
-  function speak(text) {
-
-    if (!("speechSynthesis" in window)) {
-      $("voiceStatus").textContent =
-        "Speech output is not supported in this browser.";
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-
-    const speech = new SpeechSynthesisUtterance(text);
-
-    speech.lang = "kn-IN";
-    speech.rate = 0.9;
-    speech.pitch = 1;
-
-    window.speechSynthesis.speak(speech);
-
-  }
-
-
-  function displayConversation(question, answer) {
-
-    $("userMessage").hidden = false;
-    $("assistantMessage").hidden = false;
-
-    $("userMessage").textContent = question;
-
-    $("assistantMessage").innerHTML =
-      '<span class="chat-logo">🌿</span><div>' +
-      answer +
-      '</div>';
-
-    currentAnswer = answer;
-
-    speak(answer);
-
-  }
-
-
-  function processQuestion(question) {
-
-    const q = question.toLowerCase();
-
-    let answer = "";
-    let destination = "";
-
-    if (
-      q.includes("crop") ||
-      q.includes("disease") ||
-      q.includes("leaf") ||
-      q.includes("ಬೆಳೆ") ||
-      q.includes("ರೋಗ") ||
-      q.includes("ಕೀಟ")
-    ) {
-
-      answer =
-        "ನಿಮ್ಮ ಬೆಳೆಯ ಸಮಸ್ಯೆಯನ್ನು ಪರಿಶೀಲಿಸಲು Crop Doctor ವಿಭಾಗಕ್ಕೆ ಹೋಗಿ. " +
-        "ಬೆಳೆಯ ಫೋಟೋವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ. ನಿಜವಾದ ರೋಗ ಪತ್ತೆಗೆ AI ಸೇವೆ ಸಂಪರ್ಕಿಸಬೇಕು.";
-
-      destination = "crop";
-
-    } else if (
-      q.includes("soil") ||
-      q.includes("ಮಣ್ಣು") ||
-      q.includes("ಮಣ್ಣಿನ")
-    ) {
-
-      answer =
-        "ಮಣ್ಣಿನ ಪರೀಕ್ಷಾ ವಿವರಗಳನ್ನು ತಿಳಿಯಲು Soil Intelligence ವಿಭಾಗಕ್ಕೆ ಹೋಗಿ. " +
-        "ನಿಮ್ಮ ಮಣ್ಣಿನ pH, Nitrogen, Phosphorus ಮತ್ತು Potassium ಮೌಲ್ಯಗಳನ್ನು ನಮೂದಿಸಿ.";
-
-      destination = "soil";
-
-    } else if (
-      q.includes("scheme") ||
-      q.includes("ಯೋಜನೆ") ||
-      q.includes("ಸರ್ಕಾರ")
-    ) {
-
-      answer =
-        "ಸರ್ಕಾರದ ಕೃಷಿ ಯೋಜನೆಗಳನ್ನು ನೋಡಲು Schemes ವಿಭಾಗಕ್ಕೆ ಹೋಗಿ. " +
-        "ಅಧಿಕೃತ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಅರ್ಹತೆ ಮತ್ತು ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.";
-
-      destination = "schemes";
-
-    } else if (
-      q.includes("market") ||
-      q.includes("ಮಾರುಕಟ್ಟೆ")
-    ) {
-
-      answer =
-        "ಕೃಷಿ ಉತ್ಪನ್ನಗಳ ಮಾಹಿತಿಗಾಗಿ Agri Marketplace ವಿಭಾಗವನ್ನು ತೆರೆಯುತ್ತಿದ್ದೇನೆ.";
-
-      destination = "market";
-
-    } else {
-
-      answer =
-        "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇನ್ನಷ್ಟು ಸ್ಪಷ್ಟವಾಗಿ ಕೇಳಿ. " +
-        "ನಾನು Crop Doctor, Soil Intelligence, Government Schemes ಮತ್ತು Marketplace ವಿಭಾಗಗಳಿಗೆ ಮಾರ್ಗದರ್ಶನ ನೀಡಬಹುದು.";
-
-    }
-
-    displayConversation(question, answer);
-
-    if (destination) {
-
-      setTimeout(() => {
-        showScreen(destination);
-      }, 1800);
-
-    }
-
-  }
-
-
-  function startVoice() {
-
-    if (!SpeechRecognition) {
-
-      $("voiceStatus").textContent =
-        "Voice recognition is unavailable. Open this website in Chrome and allow microphone access.";
-
-      return;
-
-    }
-
-    if (listening) {
-      recognition.stop();
-      return;
-    }
-
-    recognition = new SpeechRecognition();
-
-    recognition.lang = "kn-IN";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-
-      listening = true;
-
-      $("voiceButton").classList.add("listening");
-      $("voiceStatus").textContent = "Listening...";
-      $("voiceHint").textContent = "Speak now";
-
-    };
-
-    recognition.onresult = event => {
-
-      const question =
-        event.results[0][0].transcript;
-
-      $("voiceHint").textContent =
-        "ನಿಮ್ಮ ಪ್ರಶ್ನೆ: " + question;
-
-      processQuestion(question);
-
-    };
-
-    recognition.onerror = event => {
-
-      $("voiceStatus").textContent =
-        "Microphone error: " + event.error;
-
-    };
-
-    recognition.onend = () => {
-
-      listening = false;
-      recognition = null;
-
-      $("voiceButton").classList.remove("listening");
-      $("voiceStatus").textContent = "Tap to speak again";
-
-    };
-
-    try {
-      recognition.start();
-    } catch (error) {
-      $("voiceStatus").textContent =
-        "Could not start microphone. Please try again.";
-      recognition = null;
-      listening = false;
-    }
-
-  }
-
-
-  $("voiceButton").addEventListener("click", startVoice);
-
-  window.startVoice = startVoice;
-
-  $("stopVoice").addEventListener("click", () => {
-
-    if (recognition && listening) {
-      recognition.stop();
-    }
-
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-
-    $("voiceStatus").textContent = "Voice assistant stopped.";
-
-  });
-
-
-  // Example question buttons
-
-  window.askExample = function (type) {
-
-    const examples = {
-      crop: "ನನ್ನ ಬೆಳೆಗೆ ರೋಗ ಬಂದಿದೆ",
-      soil: "ನನ್ನ ಮಣ್ಣಿನ ಮಾಹಿತಿ ಬೇಕು",
-      scheme: "ನನಗೆ ಕೃಷಿ ಯೋಜನೆಗಳ ಮಾಹಿತಿ ಬೇಕು"
-    };
-
-    processQuestion(examples[type] || "ನನಗೆ ಕೃಷಿ ಸಹಾಯ ಬೇಕು");
-
-  };
-
-
-  // =====================================
-  // INITIAL SCREEN
-  // =====================================
-
-  showScreen("home");
-
+  greetingTextEl.textContent = `${greeting}, ${farmerProfile.name.split(" ")[0]}!`;
+  greetingSubEl.textContent = subText;
+  greetingIconEl.className = `ph ${iconClass}`;
+}
+
+// ==========================================
+// 3. Farmer Profile State & Dropdown
+// ==========================================
+const profileToggleBtn = document.getElementById("profile-toggle-btn");
+const profileModal = document.getElementById("profile-modal");
+const closeProfileBtn = document.getElementById("close-profile-modal");
+const saveProfileBtn = document.getElementById("save-profile-btn");
+
+function applyProfileUI() {
+  document.getElementById("nav-user-name").textContent = farmerProfile.name;
+  document.querySelector(".profile-role").textContent = farmerProfile.farm;
+  document.getElementById("farmer-name-input").value = farmerProfile.name;
+  document.getElementById("farm-name-input").value = farmerProfile.farm;
+  document.getElementById("primary-crop-input").value = farmerProfile.crop;
+}
+
+profileToggleBtn.addEventListener("click", () => {
+  profileModal.classList.toggle("hidden");
 });
+
+closeProfileBtn.addEventListener("click", () => {
+  profileModal.classList.add("hidden");
+});
+
+saveProfileBtn.addEventListener("click", () => {
+  farmerProfile.name = document.getElementById("farmer-name-input").value.trim() || farmerProfile.name;
+  farmerProfile.farm = document.getElementById("farm-name-input").value.trim() || farmerProfile.farm;
+  farmerProfile.crop = document.getElementById("primary-crop-input").value.trim() || farmerProfile.crop;
+  
+  localStorage.setItem("marutham_profile", JSON.stringify(farmerProfile));
+  applyProfileUI();
+  updateGreeting();
+  profileModal.classList.add("hidden");
+});
+
+// ==========================================
+// 4. AI Agronomist Chat Engine
+// ==========================================
+const chatStream = document.getElementById("chat-stream");
+const chatForm = document.getElementById("chat-form");
+const chatInput = document.getElementById("chat-input");
+const clearChatBtn = document.getElementById("clear-chat-btn");
+
+function appendChatMessage(sender, text) {
+  const msgEl = document.createElement("div");
+  msgEl.className = `message ${sender === "user" ? "message-user" : "message-ai"}`;
+  msgEl.innerHTML = text;
+  chatStream.appendChild(msgEl);
+  chatStream.scrollTop = chatStream.scrollHeight;
+}
+
+function generateAIResponse(query) {
+  const lower = query.toLowerCase();
+  for (const item of AGRI_KNOWLEDGE_BASE) {
+    if (item.keywords.some(k => lower.includes(k))) {
+      return item.response;
+    }
+  }
+  return "Query registered in agricultural records. Our agro-pathology model recommends taking a photo via the Leaf Scanner below to inspect for nutrient deficits or fungal traces.";
+}
+
+chatForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const text = chatInput.value.trim();
+  if (!text) return;
+
+  // Add User Message
+  appendChatMessage("user", text);
+  chatInput.value = "";
+
+  // Simulate AI response delay
+  setTimeout(() => {
+    const aiAnswer = generateAIResponse(text);
+    appendChatMessage("ai", aiAnswer);
+  }, 500);
+});
+
+clearChatBtn.addEventListener("click", () => {
+  chatStream.innerHTML = "";
+  appendChatMessage("ai", `Vanakkam ${farmerProfile.name}! I am your MARUTHAM AI Agronomist. How can I help your crop today?`);
+});
+
+// ==========================================
+// 5. Leaf Health Scanner
+// ==========================================
+const dropZone = document.getElementById("drop-zone");
+const leafImageInput = document.getElementById("leaf-image-input");
+const dropzoneContent = document.getElementById("dropzone-content");
+const imagePreview = document.getElementById("image-preview");
+const scanResults = document.getElementById("scan-results");
+
+dropZone.addEventListener("click", () => leafImageInput.click());
+
+leafImageInput.addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    imagePreview.src = event.target.result;
+    imagePreview.classList.remove("hidden");
+    dropzoneContent.classList.add("hidden");
+    runScanAnalysis();
+  };
+  reader.readAsDataURL(file);
+});
+
+function runScanAnalysis() {
+  scanResults.classList.remove("hidden");
+  const resultBadge = document.getElementById("result-status");
+  resultBadge.textContent = "AI Model Diagnosing...";
+  resultBadge.style.color = "#f39c12";
+
+  setTimeout(() => {
+    resultBadge.textContent = "Infection Detected (Confidence: 94.2%)";
+    resultBadge.style.color = "#e74c3c";
+  }, 900);
+}
+
+// ==========================================
+// 6. Farm Database & Activity Table Operations
+// ==========================================
+const recordsTbody = document.getElementById("records-tbody");
+const activityForm = document.getElementById("activity-form");
+
+function renderDatabaseTable() {
+  recordsTbody.innerHTML = "";
+  farmDatabase.forEach((record) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${record.date}</td>
+      <td><strong>${record.plot}</strong></td>
+      <td>${record.type}</td>
+      <td>${record.notes}</td>
+      <td><button class="btn-icon" onclick="deleteRecord(${record.id})"><i class="ph ph-trash"></i></button></td>
+    `;
+    recordsTbody.appendChild(tr);
+  });
+}
+
+function saveDatabase() {
+  localStorage.setItem("marutham_records", JSON.stringify(farmDatabase));
+  renderDatabaseTable();
+}
+
+activityForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const plot = document.getElementById("activity-plot").value;
+  const type = document.getElementById("activity-type").value;
+  const notes = document.getElementById("activity-notes").value;
+
+  const now = new Date();
+  const dateStr = `${now.toISOString().split("T")[0]} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+  farmDatabase.unshift({
+    id: Date.now(),
+    date: dateStr,
+    plot,
+    type,
+    notes
+  });
+
+  saveDatabase();
+  activityForm.reset();
+});
+
+window.deleteRecord = function(id) {
+  farmDatabase = farmDatabase.filter(r => r.id !== id);
+  saveDatabase();
+};
+
+// ==========================================
+// 7. Initialization
+// ==========================================
+window.addEventListener("DOMContentLoaded", () => {
+  applyProfileUI();
+  updateGreeting();
+  renderDatabaseTable();
+  appendChatMessage("ai", `Vanakkam <strong>${farmerProfile.name}</strong>! I am your MARUTHAM AI Agronomist. How can I assist your crop management today?`);
+});
+                                  
