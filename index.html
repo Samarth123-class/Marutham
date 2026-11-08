@@ -3,439 +3,220 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#075b32">
-  <title>Marutham – Smart Farming</title>
+  <title>MARUTHAM - Smart Agri-Tech Platform</title>
+  <!-- Google Fonts & Phosphor Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
-
-  <!-- TOP HEADER -->
-  <header class="topbar">
-    <div class="brand" onclick="showScreen('home')">
-      <span class="logo">🌿</span>
-      <span>Marutham</span>
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <!-- Provided Logo -->
+      <img src="marutham-logo.jpg" alt="MARUTHAM Logo" class="brand-logo">
+      <div class="brand-text">
+        <h1 class="brand-title">MARUTHAM</h1>
+        <p class="brand-sub">By Terra Byte Innovators</p>
+      </div>
     </div>
-    <button class="icon-button" aria-label="Notifications">♧</button>
+
+    <!-- Greetings Section (Center) -->
+    <div class="nav-greeting" id="greetings-container">
+      <div class="greeting-icon-box">
+        <i class="ph ph-sun-dim" id="greeting-icon"></i>
+      </div>
+      <div>
+        <h2 class="greeting-heading" id="greeting-text">Welcome, Farmer</h2>
+        <p class="greeting-subtext" id="greeting-sub">Optimizing your harvest today</p>
+      </div>
+    </div>
+
+    <!-- Farmer Profile Card (Top Right Corner) -->
+    <div class="nav-right">
+      <div class="profile-card" id="profile-toggle-btn">
+        <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=150&q=80" alt="Farmer Profile" class="profile-avatar" id="avatar-display">
+        <div class="profile-info">
+          <span class="profile-name" id="nav-user-name">Ramanathan K.</span>
+          <span class="profile-role">Kaveri Delta Agro Farm</span>
+        </div>
+        <i class="ph ph-caret-down profile-arrow"></i>
+      </div>
+      
+      <!-- Profile Dropdown Modal -->
+      <div class="profile-dropdown hidden" id="profile-modal">
+        <div class="dropdown-header">
+          <h4>Farm Profile & Settings</h4>
+          <button id="close-profile-modal" class="btn-icon"><i class="ph ph-x"></i></button>
+        </div>
+        <div class="form-group">
+          <label for="farmer-name-input">Farmer Name</label>
+          <input type="text" id="farmer-name-input" value="Ramanathan K.">
+        </div>
+        <div class="form-group">
+          <label for="farm-name-input">Farm Name / Region</label>
+          <input type="text" id="farm-name-input" value="Kaveri Delta Agro Farm">
+        </div>
+        <div class="form-group">
+          <label for="primary-crop-input">Primary Crop</label>
+          <input type="text" id="primary-crop-input" value="Paddy & Groundnut">
+        </div>
+        <button class="btn btn-primary btn-block" id="save-profile-btn">
+          <i class="ph ph-floppy-disk"></i> Save Profile Details
+        </button>
+      </div>
+    </div>
   </header>
 
-  <!-- MAIN DASHBOARD -->
-  <main>
-
-    <section class="screen active" id="home">
-
-      <div class="hero">
-        <div class="hero-content">
-          <span class="hero-tag">SMART FARMING</span>
-          <h1>Technology That Speaks the Farmer's Language.</h1>
-          <p>Your farm. Your language. Your smart companion.</p>
-          <button class="hero-button" onclick="goToServices()">
-            Explore Services <span>→</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="welcome-strip">
-        <span>🌱</span>
-        <strong>Healthy Soil, Better Crops.</strong>
-      </div>
-
-      <div class="section-title">
-        <span>Our Services</span>
-        <span class="title-line"></span>
-      </div>
-
-      <div class="service-grid">
-
-        <button class="service-card crop-card" onclick="showScreen('crop')">
-          <span class="service-icon">🌿</span>
-          <span class="service-text">
-            <b>Crop Doctor</b>
-            <small>Crop health</small>
-          </span>
-          <span class="arrow">›</span>
-        </button>
-
-        <button class="service-card soil-card" onclick="showScreen('soil')">
-          <span class="service-icon">🌱</span>
-          <span class="service-text">
-            <b>Soil Intelligence</b>
-            <small>Soil analysis</small>
-          </span>
-          <span class="arrow">›</span>
-        </button>
-
-        <button class="service-card scheme-card" onclick="showScreen('schemes')">
-          <span class="service-icon">🏛</span>
-          <span class="service-text">
-            <b>Govt. Schemes</b>
-            <small>Farmer benefits</small>
-          </span>
-          <span class="arrow">›</span>
-        </button>
-
-        <button class="service-card market-card" onclick="showScreen('market')">
-          <span class="service-icon">🛒</span>
-          <span class="service-text">
-            <b>Agri Marketplace</b>
-            <small>Farm products</small>
-          </span>
-          <span class="arrow">›</span>
-        </button>
-
-      </div>
-
-      <button class="voice-banner" onclick="showScreen('voice')">
-        <span class="voice-wave">〰</span>
-        <span class="voice-banner-icon">🎙</span>
-        <span>
-          <b>Talk to Marutham</b>
-          <small>Voice Assistant</small>
-        </span>
-        <span class="arrow">›</span>
-      </button>
-
-      <div class="tip-card">
-        <span>🌾</span>
-        <div>
-          <b>Welcome to Marutham!</b>
-          <small>Smart agricultural guidance, made simple.</small>
-        </div>
-      </div>
-
-    </section>
-
-
-    <!-- SCHEME FINDER -->
-    <section class="screen" id="schemes">
-
-      <div class="sub-header">
-        <button class="back-button" onclick="showScreen('home')">‹</button>
-        <h2>Schemes & Benefits</h2>
-        <span>⋮</span>
-      </div>
-
-      <div class="screen-content">
-
-        <div class="search-box">
-          <span>⌕</span>
-          <input id="schemeSearch" type="search"
-            placeholder="Search schemes...">
-        </div>
-
-        <div class="filter-tabs">
-          <button class="filter active" data-filter="all">All</button>
-          <button class="filter" data-filter="central">Central</button>
-          <button class="filter" data-filter="state">State</button>
-        </div>
-
-        <div id="schemeList">
-
-          <article class="scheme-card" data-type="central"
-            data-search="pm kisan samman nidhi income support">
-            <div class="scheme-image">🌾</div>
-            <div class="scheme-info">
-              <h3>PM-KISAN Samman Nidhi Yojana</h3>
-              <h2>₹6,000 per year</h2>
-              <p>(₹2,000 × 3 installments)</p>
-            </div>
-            <div class="eligibility">
-              <b>🟢 Eligibility:</b>
-              <p>✓ Small & Marginal Farmers</p>
-              <p>✓ Subject to scheme eligibility rules</p>
-            </div>
-            <a class="green-button" href="https://pmkisan.gov.in/"
-              target="_blank" rel="noopener">Check Official Details</a>
-          </article>
-
-          <article class="scheme-card" data-type="central"
-            data-search="kisan credit card kcc loan">
-            <div class="scheme-image">💳</div>
-            <div class="scheme-info">
-              <h3>Kisan Credit Card (KCC)</h3>
-              <p>Credit support for eligible farmers.</p>
-            </div>
-            <a class="outline-button"
-              href="https://www.myscheme.gov.in/"
-              target="_blank" rel="noopener">View Details</a>
-          </article>
-
-          <article class="scheme-card" data-type="central"
-            data-search="fasal bima crop insurance">
-            <div class="scheme-image">🌱</div>
-            <div class="scheme-info">
-              <h3>PM Fasal Bima Yojana</h3>
-              <p>Crop insurance information for farmers.</p>
-            </div>
-            <a class="outline-button"
-              href="https://pmfby.gov.in/"
-              target="_blank" rel="noopener">View Details</a>
-          </article>
-
-          <article class="scheme-card" data-type="state"
-            data-search="karnataka farmer agriculture schemes">
-            <div class="scheme-image">🏛</div>
-            <div class="scheme-info">
-              <h3>Karnataka Agriculture Services</h3>
-              <p>Explore state agriculture department services.</p>
-            </div>
-            <a class="outline-button"
-              href="https://raitamitra.karnataka.gov.in/"
-              target="_blank" rel="noopener">Visit Portal</a>
-          </article>
-
-        </div>
-
-        <p id="noSchemes" hidden>No matching schemes found.</p>
-
-      </div>
-    </section>
-
-
-    <!-- VOICE ASSISTANT -->
-    <section class="screen" id="voice">
-
-      <div class="sub-header">
-        <button class="back-button" onclick="showScreen('home')">‹</button>
-        <h2>Marutham Assistant</h2>
-        <span>⋮</span>
-      </div>
-
-      <div class="screen-content voice-screen">
-
-        <div class="welcome-strip">
-          🌱 <strong>Healthy Soil, Better Crops.</strong>
-        </div>
-
-        <div class="chat-area">
-
-          <div class="chat-message assistant-message">
-            <span class="chat-logo">🌿</span>
+  <!-- Main Container -->
+  <main class="main-layout">
+    
+    <!-- Left Column: AI Agronomist & Scanner -->
+    <section class="panel-column">
+      
+      <!-- AI Agronomist Chat Widget -->
+      <div class="card card-chat">
+        <div class="card-header">
+          <div class="title-with-icon">
+            <div class="icon-badge badge-green"><i class="ph ph-sparkle"></i></div>
             <div>
-              ನಮಸ್ಕಾರ! Marutham ಗೆ ಸ್ವಾಗತ.
-              <br><br>
-              ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ. ನಾನು ನಿಮಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಯತ್ನಿಸುತ್ತೇನೆ.
+              <h3>AI Agronomist Assistant</h3>
+              <p class="card-caption">Powered by Agricultural LLM & Soil Pathology Database</p>
             </div>
           </div>
-
-          <div class="chat-message user-message" id="userMessage" hidden></div>
-
-          <div class="chat-message assistant-message" id="assistantMessage" hidden>
-          </div>
-
-        </div>
-
-        <div class="voice-center">
-          <div class="sound-wave" id="soundWave">〰 〰 〰</div>
-
-          <button class="big-mic" id="voiceButton" aria-label="Start voice assistant">
-            🎙
-          </button>
-
-          <b id="voiceStatus">Tap to speak</b>
-          <small id="voiceHint">ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ</small>
-        </div>
-
-        <button class="cancel-button" id="stopVoice">✕ Cancel</button>
-
-        <div class="voice-shortcuts">
-          <button onclick="askExample('crop')">🌿 Crop help</button>
-          <button onclick="askExample('soil')">🌱 Soil help</button>
-          <button onclick="askExample('scheme')">🏛 Schemes</button>
-        </div>
-
-      </div>
-    </section>
-
-
-    <!-- CROP DOCTOR -->
-    <section class="screen" id="crop">
-
-      <div class="sub-header">
-        <button class="back-button" onclick="showScreen('home')">‹</button>
-        <h2>AI Crop Diagnosis</h2>
-        <span>⋮</span>
-      </div>
-
-      <div class="screen-content">
-
-        <div class="crop-photo">
-          <img id="cropPreview"
-            src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=900"
-            alt="Crop leaves">
-          <div class="photo-label">Crop image preview</div>
-        </div>
-
-        <div class="upload-actions">
-          <label class="upload-button">
-            📷 Take / Choose Photo
-            <input type="file" id="cropImage"
-              accept="image/*" capture="environment">
-          </label>
-          <button class="outline-button" id="resetCrop">↻ Reset</button>
-        </div>
-
-        <div class="info-card">
-          <h3>🌿 Crop Analysis</h3>
-          <p id="cropStatus">
-            Select a crop image to begin.
-          </p>
-          <button class="green-button" id="analyzeCrop">
-            Analyse Crop Image
-          </button>
-          <p class="disclaimer">
-            Demo mode: real disease detection requires a connected AI model.
-          </p>
-        </div>
-
-        <div class="info-card">
-          <h3>Recommendation</h3>
-          <div id="cropResult">
-            <p>✓ Upload a clear photo of the affected crop.</p>
-            <p>✓ Include both healthy and affected leaves if possible.</p>
-          </div>
-        </div>
-
-        <div class="info-card soil-result-card">
-          <h3>🌱 Soil Analysis Result</h3>
-          <div class="nutrient-row">
-            <span>🟢</span> N: <b>Not tested</b>
-          </div>
-          <div class="nutrient-row">
-            <span>🟢</span> P: <b>Not tested</b>
-          </div>
-          <div class="nutrient-row">
-            <span>🟡</span> K: <b>Not tested</b>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-
-    <!-- SOIL INTELLIGENCE -->
-    <section class="screen" id="soil">
-
-      <div class="sub-header">
-        <button class="back-button" onclick="showScreen('home')">‹</button>
-        <h2>ಮಣ್ಣಿನ ಬುದ್ಧಿವಂತಿಕೆ</h2>
-        <span>⋮</span>
-      </div>
-
-      <div class="screen-content">
-
-        <div class="welcome-strip">
-          🌱 <strong>ನಿಮ್ಮ ಮಣ್ಣು, ನಿಮ್ಮ ಬೆಳೆಗಳ ಭವಿಷ್ಯ.</strong>
-        </div>
-
-        <div class="soil-upload">
-          <h3>ಮಣ್ಣಿನ ಫೋಟೋ ಆಯ್ಕೆಮಾಡಿ</h3>
-          <p>Upload a soil image for the prototype.</p>
-
-          <label class="upload-button">
-            📷 Choose Soil Image
-            <input type="file" id="soilImage" accept="image/*">
-          </label>
-
-          <img id="soilPreview" hidden alt="Soil image preview">
-        </div>
-
-        <div class="info-card">
-          <h3>ಮಣ್ಣಿನ ಪರೀಕ್ಷಾ ವಿವರಗಳು</h3>
-
-          <label class="field-label">Soil pH</label>
-          <input class="data-input" id="soilPH" type="number"
-            min="0" max="14" step="0.1" placeholder="Enter pH">
-
-          <label class="field-label">Nitrogen (N)</label>
-          <input class="data-input" id="nitrogen" type="number"
-            min="0" placeholder="Enter nitrogen">
-
-          <label class="field-label">Phosphorus (P)</label>
-          <input class="data-input" id="phosphorus" type="number"
-            min="0" placeholder="Enter phosphorus">
-
-          <label class="field-label">Potassium (K)</label>
-          <input class="data-input" id="potassium" type="number"
-            min="0" placeholder="Enter potassium">
-
-          <button class="green-button" id="soilAnalyze">
-            ಮಣ್ಣನ್ನು ವಿಶ್ಲೇಷಿಸಿ
+          <button class="btn-clear" id="clear-chat-btn" title="Clear chat history">
+            <i class="ph ph-trash"></i>
           </button>
         </div>
 
-        <div class="info-card" id="soilOutput">
-          <h3>🌱 Soil Analysis Result</h3>
-          <p>Enter soil-test values to view a summary.</p>
+        <div class="chat-messages" id="chat-stream">
+          <!-- Dynamic conversation logs populate here -->
         </div>
 
-        <div class="voice-banner" onclick="showScreen('voice')">
-          <span>🔊</span>
-          <b>ಮಣ್ಣಿನ ಮಾಹಿತಿ ಕೇಳಿ</b>
-          <span>›</span>
-        </div>
-
+        <!-- Chat Input Form -->
+        <form class="chat-form" id="chat-form">
+          <input type="text" id="chat-input" placeholder="Ask about fertilizers, yellow leaves, pests, market rates..." autocomplete="off">
+          <button type="submit" class="btn btn-send" id="send-btn">
+            <i class="ph ph-paper-plane-right"></i>
+          </button>
+        </form>
       </div>
+
+      <!-- Crop Disease & Leaf Health Scanner -->
+      <div class="card card-scanner">
+        <div class="card-header">
+          <div class="title-with-icon">
+            <div class="icon-badge badge-amber"><i class="ph ph-scan"></i></div>
+            <div>
+              <h3>Instant Leaf Health Scanner</h3>
+              <p class="card-caption">Upload infected leaf photos for AI pathology analysis</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="scanner-dropzone" id="drop-zone">
+          <input type="file" id="leaf-image-input" accept="image/*" class="file-input-hidden">
+          <div class="dropzone-content" id="dropzone-content">
+            <i class="ph ph-cloud-arrow-up drop-icon"></i>
+            <p><strong>Click or Drag & Drop</strong> leaf photo to scan</p>
+            <span class="drop-hint">Detects Blight, Rust, Aphids, and Nutrient Deficiencies</span>
+          </div>
+          <img id="image-preview" class="image-preview hidden" alt="Uploaded Leaf Preview">
+        </div>
+
+        <div id="scan-results" class="scan-results hidden">
+          <div class="result-badge" id="result-status">Analyzing Pathology...</div>
+          <div class="result-body">
+            <p id="result-disease"><strong>Diagnosis:</strong> Bacterial Leaf Blight (Xanthomonas oryzae)</p>
+            <p id="result-solution"><strong>Treatment:</strong> Apply Copper Oxychloride 50 WP (2.5g/L) or Streptocycline spray.</p>
+          </div>
+        </div>
+      </div>
+
     </section>
 
-
-    <!-- MARKETPLACE -->
-    <section class="screen" id="market">
-
-      <div class="sub-header">
-        <button class="back-button" onclick="showScreen('home')">‹</button>
-        <h2>Agri Marketplace</h2>
-        <span>⋮</span>
+    <!-- Right Column: Farm Telemetry & Database Records -->
+    <section class="panel-column">
+      
+      <!-- Telemetry Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-title"><i class="ph ph-drop"></i> Soil Moisture</span>
+          <span class="stat-value">68%</span>
+          <span class="stat-tag tag-good">Optimal</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title"><i class="ph ph-thermometer"></i> Ambient Temp</span>
+          <span class="stat-value">29.4°C</span>
+          <span class="stat-tag tag-neutral">Normal</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-title"><i class="ph ph-flask"></i> Soil pH</span>
+          <span class="stat-value">6.5</span>
+          <span class="stat-tag tag-good">Balanced</span>
+        </div>
       </div>
 
-      <div class="screen-content">
-        <div class="welcome-strip">
-          🛒 <strong>Farmer Products & Services</strong>
+      <!-- Farm Activity & Database Logs -->
+      <div class="card card-database">
+        <div class="card-header">
+          <div class="title-with-icon">
+            <div class="icon-badge badge-blue"><i class="ph ph-database"></i></div>
+            <div>
+              <h3>Farm Activity Database</h3>
+              <p class="card-caption">Locally persisted farm records and field interventions</p>
+            </div>
+          </div>
         </div>
 
-        <div class="info-card">
-          <h3>Marketplace</h3>
-          <p>Explore agricultural products, seeds, tools and services.</p>
-          <p>This marketplace module is currently a prototype.</p>
+        <!-- Add Activity Form -->
+        <form class="activity-form" id="activity-form">
+          <div class="form-row">
+            <input type="text" id="activity-plot" placeholder="Field Plot (e.g., Plot B - Paddy)" required>
+            <select id="activity-type">
+              <option value="Irrigation">💧 Irrigation</option>
+              <option value="Fertilizer">🌱 Fertilizer / NPK</option>
+              <option value="Pesticide">🛡️ Crop Protection</option>
+              <option value="Harvest">🌾 Harvest Task</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <input type="text" id="activity-notes" placeholder="Notes (e.g. 50kg Urea applied, drip run for 3 hours)" required>
+            <button type="submit" class="btn btn-secondary">
+              <i class="ph ph-plus-circle"></i> Log Entry
+            </button>
+          </div>
+        </form>
+
+        <!-- Records Table -->
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Plot ID</th>
+                <th>Intervention</th>
+                <th>Notes</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="records-tbody">
+              <!-- Rendered via JavaScript -->
+            </tbody>
+          </table>
         </div>
       </div>
+
     </section>
 
   </main>
 
-
-  <!-- BOTTOM NAVIGATION -->
-  <nav class="bottom-nav">
-
-    <button class="nav-item active" data-screen="home">
-      <span>⌂</span>
-      <small>Home</small>
-    </button>
-
-    <button class="nav-item" data-screen="schemes">
-      <span>▤</span>
-      <small>Services</small>
-    </button>
-
-    <button class="nav-mic" id="navMic" aria-label="Voice assistant">
-      🎙
-    </button>
-
-    <button class="nav-item" data-screen="profile">
-      <span>♙</span>
-      <small>Profile</small>
-    </button>
-
-    <button class="nav-item" data-screen="more">
-      <span>•••</span>
-      <small>More</small>
-    </button>
-
-  </nav>
-
-</div>
-
-<script src="script.js"></script>
+  <!-- Custom JavaScript -->
+  <script src="script.js"></script>
 </body>
-</html>
+  </html>
+  
