@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#075b32">
+  <title>Marutham – Smart Farming</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Custom Logo */
+    .brand-logo-img {
+      height: 38px;
+      width: auto;
+      max-width: 120px;
+      object-fit: contain;
+      border-radius: 8px;
+      vertical-align: middle;
+    }
+    /* Topbar Login Button */
+    .topbar-login-btn {
+      background: var(--green);
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+    .topbar-login-btn:hover {
+      background: var(--dark);
+    }
+    .topbar-login-btn.logged-in {
+      background: #eff6e9;
+      color: var(--green);
+      border: 1px solid var(--border);
+    }
+    /* Admin UI Badges & Live Indicators */
+    .admin-badge {
+      background: #dc2626;
+      color: white;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #15803d;
+      font-weight: 700;
+    }
+    .pulse-dot {
+      width: 9px;
+      height: 9px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+    .stat-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stat-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+    .stat-card b {
+      display: block;
+      font-size: 19px;
+      color: var(--green);
+      margin-top: 4px;
+    }
+    .stat-card small {
+      font-size: 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .feed-container {
+      max-height: 440px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 4px;
+    }
+    .feed-item {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 13px;
+      font-size: 12px;
+      border-left: 4px solid var(--green);
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- TOP HEADER -->
+  <header class="topbar">
+    <div class="brand" onclick="showScreen('home')">
+      <img src="logo.png" alt="Marutham Logo" class="brand-logo-img">
+      <span>Marutham</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button class="topbar-login-btn" id="topbarLoginBtn" onclick="showScreen('loginScreen')">
+        👤 Login
+      </button>
+      <button class="icon-button" id="adminHeaderBtn" onclick="showScreen('adminScreen')" title="Admin Live Dashboard" hidden>
+        ⚙️
+      </button>
+      <button class="icon-button" aria-label="Notifications">♧</button>
+    </div>
+  </header>
+
+  <!-- MAIN SCROLLABLE APP BODY -->
+  <main>
+
+    <!-- 1. HOME SCREEN -->
+    <section class="screen active" id="home">
+
+      <!-- TOP GREETING STRIP -->
+      <div class="welcome-strip" style="margin: 12px 16px 6px;">
+        <span>🌱</span>
+        <strong id="farmerGreeting">Healthy Soil, Better Crops.</strong>
+      </div>
+
+      <!-- HERO BANNER -->
+      <div class="hero" style="margin-top: 8px;">
+        <div class="hero-content">
+          <span class="hero-tag">SMART FARMING</span>
+          <h1>Technology That Speaks the Farmer's Language.</h1>
+          <p>Your farm. Your language. Your smart companion.</p>
+          <button class="hero-button" onclick="goToServices()">
+            Explore Services <span>→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="section-title">
+        <span>Our Services</span>
+        <span class="title-line"></span>
+      </div>
+
+      <div class="service-grid">
+
+        <button class="service-card crop-card" onclick="showScreen('crop')">
+          <span class="service-icon">🌿</span>
+          <span class="service-text">
+            <b>Crop Doctor</b>
+            <small>Crop health</small>
+          </span>
+          <span class="arrow">›</span>
+        </button>
+
+        <button class="service-card soil-card" onclick="showScreen('soil')">
+          <span class="service-icon">🌱</span>
+          <span class="service-text">
+            <b>Soil Intelligence</b>
+            <small>Soil analysis</small>
+          </span>
+          <span class="arrow">›</span>
+        </button>
+
+        <button class="service-card scheme-card" onclick="showScreen('schemes')">
+          <span class="service-icon">🏛</span>
+          <span class="service-text">
+            <b>Govt. Schemes</b>
+            <small>Farmer benefits</small>
+          </span>
+          <span class="arrow">›</span>
+        </button>
+
+        <button class="service-card market-card" onclick="showScreen('market')">
+          <span class="service-icon">🛒</span>
+          <span class="service-text">
+            <b>Agri Marketplace</b>
+            <small>Farm products</small>
+          </span>
+          <span class="arrow">›</span>
+        </button>
+
+      </div>
+
+      <button class="voice-banner" onclick="showScreen('voice')">
+        <span class="voice-wave">〰</span>
+        <span class="voice-banner-icon">🎙</span>
+        <span>
+          <b>Talk to Marutham</b>
+          <small>Voice Assistant</small>
+        </span>
+        <span class="arrow">›</span>
+      </button>
+
+      <div class="tip-card">
+        <span>🌾</span>
+        <div>
+          <b>Welcome to Marutham!</b>
+          <small>Smart agricultural guidance, made simple.</small>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2. PORTAL LOGIN SCREEN -->
+    <section class="screen" id="loginScreen">
+      <div class="sub-header">
+        <button class="back-button" onclick="showScreen('home')">‹</button>
+        <h2>Account Login</h2>
+        <span>⋮</span>
+      </div>
+
+      <div class="screen-content">
+        <div class="info-card" style="margin-top: 10px;">
+          <div style="text-align: center; margin-bottom: 16px;">
+            <span style="font-size: 38px;">👨‍🌾</span>
+            <h3 style="margin-top: 6px;">Sign In to Portal</h3>
+            <p style="font-size: 12px; color: var(--muted);">Log in as a farmer or monitor as an administrator.</p>
+          </div>
+
+          <form id="customLoginForm" onsubmit="event.preventDefault(); handlePortalLogin();">
+            <label class="field-label" for="loginEmail">Email / Username</label>
+            <input class="data-input" id="loginEmail" type="text" placeholder="e.g. admin or farmer@example.com" required>
+
+            <label class="field-label" for="loginPassword">Password / PIN</label>
+            <input class="data-input" id="loginPassword" type="password" placeholder="Enter password" required>
+
+            <label class="field-label" for="loginRole">Account Role</label>
+            <select class="data-input" id="loginRole">
+              <option value="farmer">Farmer Account</option>
+              <option value="admin">Admin / System Monitor</option>
+            </select>
+
+            <button class="green-button" type="submit" id="btnSubmitLogin" style="margin-top: 18px; width: 100%;">
+              Sign In
+            </button>
+          </form>
+
+          <div id="loginFeedback" style="margin-top: 12px; text-align: center; font-size: 13px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. REAL-TIME ADMIN MONITOR SCREEN -->
+    <section class="screen" id="adminScreen">
+      <div class="sub-header">
+        <button class="back-button" onclick="showScreen('home')">‹</button>
+        <h2>Live Monitor Dashboard</h2>
+        <span class="admin-badge">ADMIN</span>
+      </div>
+
+      <div class="screen-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div class="live-indicator">
+            <span class="pulse-dot"></span>
+            <span>Firestore Stream: Connected</span>
+          </div>
+          <button class="outline-button" onclick="logoutAdmin()" style="min-height: 30px; padding: 3px 9px; font-size: 11px;">
+            Exit Admin
+          </button>
+        </div>
+
+        <div class="stat-cards-grid">
+          <div class="stat-card">
+            <small>Reports</small>
+            <b id="statDiagnoses">0</b>
+          </div>
+          <div class="stat-card">
+            <small>Logins</small>
+            <b id="statSessions">0</b>
+          </div>
+          <div class="stat-card">
+            <small>Stream</small>
+            <b id="statLatency">&lt;1s</b>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h3 style="margin: 0;">Live AI Data Feed</h3>
+            <small style="color: var(--muted); font-size: 11px;">Second-by-second updates</small>
+          </div>
+          <div class="feed-container" id="adminLiveFeed">
+            <p style="color: var(--muted); text-align: center; padding: 20px;">Connecting to Firebase live feed...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. GOVERNMENT SCHEME FINDER -->
+    <section class="screen" id="schemes">
+      <iframe class="module-frame" src="scheme.html" title="Marutham Government Scheme Finder"></iframe>
+    </section>
+
+    <!-- 5. AGRI MARKETPLACE -->
+    <section class="screen" id="market">
+      <iframe class="module-frame" src="marutham_marketplace.html" title="Marutham Agri Marketplace"></iframe>
+    </section>
+
+    <!-- 6. VOICE ASSISTANT -->
+    <section class="screen" id="voice">
+      <div class="sub-header">
+        <button class="back-button" onclick="showScreen('home')">‹</button>
+        <h2>Marutham Assistant</h2>
+        <span>⋮</span>
+      </div>
+
+      <div class="screen-content voice-screen">
+        <div class="welcome-strip">
+          🌱 <strong>Healthy Soil, Better Crops.</strong>
+        </div>
+        <div class="language-control">
+          <label for="languageSelect">🌐 Choose your language</label>
+          <select id="languageSelect">
+            <option value="English">English</option>
+            <option value="Kannada">ಕನ್ನಡ</option>
+            <option value="Hindi">हिन्दी</option>
+            <option value="Tamil">தமிழ்</option>
+            <option value="Telugu">తెలుగు</option>
+            <option value="Malayalam">മലയാളം</option>
+          </select>
+        </div>
+        <div class="chat-area">
+          <div class="chat-message assistant-message">
+            <span class="chat-logo">🌿</span>
+            <div>
+              ನಮಸ್ಕಾರ! Marutham ಗೆ ಸ್ವಾಗತ.
+              <br><br>
+              ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ. ನಾನು ನಿಮಗೆ ಸಹಾಯ ಮಾಡಲು ಪ್ರಯತ್ನಿಸುತ್ತೇನೆ.
+            </div>
+          </div>
+          <div class="chat-message user-message" id="userMessage" hidden></div>
+          <div class="chat-message assistant-message" id="assistantMessage" hidden></div>
+        </div>
+        <div class="voice-center">
+          <div class="sound-wave" id="soundWave">〰 〰 〰</div>
+          <button class="big-mic" id="voiceButton" aria-label="Start voice assistant">🎙</button>
+          <b id="voiceStatus">Tap to speak</b>
+          <small id="voiceHint">ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ</small>
+        </div>
+        <div class="message-input-area">
+          <input type="text" id="messageInput" placeholder="Ask Marutham anything..." autocomplete="off">
+          <button id="sendMessage" aria-label="Send message">➤</button>
+        </div>
+        <p class="input-hint">🎙 Speak or type your farming question</p>
+        <button class="outline-button" id="stopVoice" type="button">Stop voice</button>
+      </div>
+    </section>
+
+    <!-- 7. CROP DOCTOR -->
+    <section class="screen" id="crop">
+      <div class="sub-header">
+        <button class="back-button" onclick="showScreen('home')">‹</button>
+        <h2>AI Crop Diagnosis</h2>
+        <span>⋮</span>
+      </div>
+
+      <div class="screen-content">
+        <div class="crop-photo">
+          <img id="cropPreview" src="https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=900" alt="Crop leaves">
+          <div class="photo-label">Crop image preview</div>
+        </div>
+
+        <div class="upload-actions">
+          <label class="upload-button">
+            📷 Take / Choose Photo
+            <input type="file" id="cropImage" accept="image/*" capture="environment">
+          </label>
+          <button class="outline-button" id="resetCrop">↻ Reset</button>
+        </div>
+
+        <div class="info-card">
+          <h3>🌿 Crop Analysis</h3>
+          <p id="cropStatus">Select a crop image to begin.</p>
+          <button class="green-button" id="analyzeCrop">Analyse Crop Image</button>
+          <p class="disclaimer">Demo mode: connected to live Firebase AI backend.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>Tell us what you notice</h3>
+          <label class="field-label" for="cropName">Which crop is affected?</label>
+          <input class="data-input" id="cropName" type="text" placeholder="Example: tomato, paddy, cotton">
+          
+          <label class="field-label" for="cropSymptoms">What do you see?</label>
+          <select class="data-input" id="cropSymptoms">
+            <option value="">Choose the closest symptom</option>
+            <option value="yellow">Leaves turning yellow</option>
+            <option value="spots">Spots or patches on leaves</option>
+            <option value="holes">Holes or insects on leaves</option>
+            <option value="wilting">Plant wilting or drying</option>
+            <option value="rot">Stem, root or fruit rotting</option>
+            <option value="growth">Slow growth or weak plants</option>
+            <option value="other">Something else / not sure</option>
+          </select>
+
+          <label class="field-label" for="cropWhen">When did you first notice it?</label>
+          <select class="data-input" id="cropWhen">
+            <option value="">Choose one</option>
+            <option>Today</option>
+            <option>2–3 days ago</option>
+            <option>About a week ago</option>
+            <option>More than a week ago</option>
+          </select>
+          <button class="green-button" id="cropGuide">Get basic guidance</button>
+        </div>
+
+        <div class="info-card">
+          <h3>Recommendation</h3>
+          <div id="cropResult">
+            <p>Upload a clear photo and describe the symptoms to receive basic next-step guidance.</p>
+            <p>Do not apply pesticides based only on a photo. Confirm the cause with a local agriculture officer or KVK.</p>
+          </div>
+        </div>
+
+        <div class="info-card soil-result-card">
+          <h3>🌱 Soil Analysis Result</h3>
+          <div class="nutrient-row"><span>🟢</span> N: <b>Not tested</b></div>
+          <div class="nutrient-row"><span>🟢</span> P: <b>Not tested</b></div>
+          <div class="nutrient-row"><span>🟡</span> K: <b>Not tested</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. SOIL INTELLIGENCE -->
+    <section class="screen" id="soil">
+      <div class="sub-header">
+        <button class="back-button" onclick="showScreen('home')">‹</button>
+        <h2>ಮಣ್ಣಿನ ಬುದ್ಧಿವಂತಿಕೆ</h2>
+        <span>⋮</span>
+      </div>
+
+      <div class="screen-content">
+        <div class="welcome-strip">
+          🌱 <strong>ನಿಮ್ಮ ಮಣ್ಣು, ನಿಮ್ಮ ಬೆಳೆಗಳ ಭವಿಷ್ಯ.</strong>
+        </div>
+
+        <div class="soil-upload">
+          <h3>ಮಣ್ಣಿನ ಫೋಟೋ ಆಯ್ಕೆಮಾಡಿ</h3>
+          <p>Upload a soil image for the prototype.</p>
+          <label class="upload-button">
+            📷 Choose Soil Image
+            <input type="file" id="soilImage" accept="image/*">
+          </label>
+          <img id="soilPreview" hidden alt="Soil image preview">
+        </div>
+
+        <div class="info-card">
+          <h3>Choose the easiest option</h3>
+          <p>If you have a Soil Health Card or lab report, upload its photo above. You do not need to type the values here.</p>
+          <p>If you do not have a report, answer these simple questions.</p>
+          <label class="field-label" for="soilCrop">What do you grow?</label>
+          <input class="data-input" id="soilCrop" type="text" placeholder="Example: paddy, ragi, tomato">
+          <label class="field-label" for="soilConcern">What is the main problem?</label>
+          <select class="data-input" id="soilConcern">
+            <option value="">Choose one</option>
+            <option value="poor">Crop is not growing well</option>
+            <option value="water">Water stays in the field</option>
+            <option value="dry">Soil dries very quickly</option>
+            <option value="salty">White crust / salt-like layer is visible</option>
+            <option value="none">No major problem; want to improve soil</option>
+          </select>
+          <button class="green-button" id="soilGuide">Get simple soil guidance</button>
+          <div id="soilGuideOutput" aria-live="polite"></div>
+        </div>
+
+        <div class="info-card">
+          <h3>Optional: enter values from a soil-test report</h3>
+          <p>Only enter these if they are printed on your report. Do not guess.</p>
+          <label class="field-label">Soil pH</label>
+          <input class="data-input" id="soilPH" type="number" min="0" max="14" step="0.1" placeholder="Enter pH">
+          <label class="field-label">Nitrogen (N)</label>
+          <input class="data-input" id="nitrogen" type="number" min="0" placeholder="Enter nitrogen">
+          <label class="field-label">Phosphorus (P)</label>
+          <input class="data-input" id="phosphorus" type="number" min="0" placeholder="Enter phosphorus">
+          <label class="field-label">Potassium (K)</label>
+          <input class="data-input" id="potassium" type="number" min="0" placeholder="Enter potassium">
+          <button class="green-button" id="soilAnalyze">ಮಣ್ಣನ್ನು ವಿಶ್ಲೇಷಿಸಿ</button>
+        </div>
+
+        <div class="info-card" id="soilOutput">
+          <h3>🌱 Soil Analysis Result</h3>
+          <p>Enter soil-test values to view a summary.</p>
+        </div>
+
+        <div class="voice-banner" onclick="showScreen('voice')">
+          <span>🔊</span>
+          <b>ಮಣ್ಣಿನ ಮಾಹಿತಿ ಕೇಳಿ</b>
+          <span>›</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-screen="home">
+      <span>⌂</span>
+      <small>Home</small>
+    </button>
+    <button class="nav-item" data-screen="schemes">
+      <span>▤</span>
+      <small>Services</small>
+    </button>
+    <button class="nav-mic" id="navMic" aria-label="Voice assistant">
+      🎙
+    </button>
+    <button class="nav-item" data-screen="profile">
+      <span>♙</span>
+      <small>Profile</small>
+    </button>
+    <button class="nav-item" data-screen="more">
+      <span>•••</span>
+      <small>More</small>
+    </button>
+  </nav>
+
+</div>
+
+<script src="script.js"></script>
+
+<!-- FIREBASE SDK & LIVE REAL-TIME STREAMING INTEGRATION -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
+  import { 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    serverTimestamp,
+    onSnapshot,
+    query,
+    orderBy,
+    limit
+  } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+  import { 
+    getStorage, 
+    ref, 
+    uploadBytes, 
+    getDownloadURL 
+  } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBI8fAKqGdngMVxTk-wMamBmoSZweHWHTM",
+    authDomain: "marutham-app-b308a.firebaseapp.com",
+    projectId: "marutham-app-b308a",
+    storageBucket: "marutham-app-b308a.firebasestorage.app",
+    messagingSenderId: "431023267094",
+    appId: "1:431023267094:web:86b2d9ff1607a373b6c437",
+    measurementId: "G-HRLWJ70KDN"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  window.db = db;
+  window.storage = storage;
+
+  window.CropBackend = {
+    async uploadImage(file) {
+      if (!file) return null;
+      const fileRef = ref(storage, `crop_diagnoses/${Date.now()}_${file.name}`);
+      const uploadResult = await uploadBytes(fileRef, file);
+      return await getDownloadURL(uploadResult.ref);
+    },
+    async saveDiagnosis(data) {
+      return await addDoc(collection(db, "crop_reports"), {
+        ...data,
+        createdAt: serverTimestamp()
+      });
+    }
+  };
+
+  // Real-time Firestore streaming listener for the Admin monitor
+  window.initRealTimeAdminMonitor = function() {
+    const feedContainer = document.getElementById("adminLiveFeed");
+    const statDiagnoses = document.getElementById("statDiagnoses");
+    const statSessions = document.getElementById("statSessions");
+
+    const qReports = query(collection(db, "crop_reports"), orderBy("createdAt", "desc"), limit(25));
+    onSnapshot(qReports, (snapshot) => {
+      if (statDiagnoses) statDiagnoses.textContent = snapshot.size;
+      if (!feedContainer) return;
+
+      if (snapshot.empty) {
+        feedContainer.innerHTML = `<p style="text-align: center; color: var(--muted); padding: 15px;">No transactions recorded yet.</p>`;
+        return;
+      }
+
+      feedContainer.innerHTML = "";
+      snapshot.forEach(docSnap => {
+        const item = docSnap.data();
+        const dateStr = item.createdAt?.toDate ? item.createdAt.toDate().toLocaleTimeString() : "Just now";
+        const div = document.createElement("div");
+        div.className = "feed-item";
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+            <b style="color:var(--green);">INPUT: ${escapeHtml(item.crop || 'Unknown')} (${escapeHtml(item.symptom || 'visual')})</b>
+            <small style="color:var(--muted);">${dateStr}</small>
+          </div>
+          <div style="color: #333; margin-bottom: 4px;">
+            <b>AI Diagnosis:</b> ${escapeHtml(item.diagnosis || 'Processing')}
+          </div>
+          <div style="color: #555; font-size: 11px;">
+            <b>Prescription:</b> ${escapeHtml(item.recommendation || 'General check')}
+          </div>
+          ${item.imageUrl ? `<div style="margin-top:6px;"><a href="${item.imageUrl}" target="_blank" style="color:var(--leaf); font-weight:bold; font-size:11px;">📷 View Uploaded Image</a></div>` : ''}
+        `;
+        feedContainer.appendChild(div);
+      });
+    }, (error) => console.warn(error));
+
+    const qLogins = query(collection(db, "login_sessions"), orderBy("timestamp", "desc"), limit(10));
+    onSnapshot(qLogins, (snap) => {
+      if (statSessions) statSessions.textContent = snap.size;
+    }, (err) => console.warn(err));
+  };
+
+  function escapeHtml(text) {
+    return String(text || "").replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+  }
+</script>
+
+</body>
+</html>

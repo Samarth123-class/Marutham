@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MARUTHAM | Farmer's Marketplace</title>
+<style>
+:root{--green:#14532d;--green2:#217a42;--lime:#d9f99d;--cream:#f7faf4;--ink:#183323;--muted:#667568;--line:#e5ece3;--orange:#f59e0b}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:#f5f8f3;color:var(--ink)}
+button,input,select{font:inherit}button{cursor:pointer}
+.topline{background:#103d26;color:#e8f5e9;text-align:center;padding:8px 12px;font-size:12px;letter-spacing:.2px}
+header{background:#fff;position:sticky;top:0;z-index:20;box-shadow:0 3px 16px #1833230c}
+.head{max-width:1240px;margin:auto;padding:15px 22px;display:flex;align-items:center;gap:25px}
+.brand{display:flex;align-items:center;gap:10px;min-width:205px;text-decoration:none;color:var(--green)}
+.logo{width:43px;height:43px;border-radius:14px;background:linear-gradient(145deg,#1c7b43,#0f4b2c);display:grid;place-items:center;color:#fff;font-size:25px}
+.brand strong{font-size:22px;letter-spacing:1.5px;display:block}.brand small{font-size:10px;color:#718173;letter-spacing:.4px}
+.search{flex:1;display:flex;background:#f1f6ef;border:1px solid #e4ede1;border-radius:12px;overflow:hidden;height:46px}
+.search input{flex:1;border:0;background:transparent;padding:0 15px;outline:0;min-width:0}.search button{border:0;background:var(--green);color:#fff;padding:0 22px;font-weight:700}
+.head-actions{display:flex;gap:10px}.action{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 13px;color:var(--green);font-weight:700;white-space:nowrap}.cart-count{background:#e7f6df;border-radius:20px;padding:2px 7px;margin-left:4px}
+nav{border-top:1px solid #f0f2ef}.navinner{max-width:1240px;margin:auto;padding:0 22px;display:flex;gap:8px;overflow:auto}.navinner button{border:0;background:transparent;padding:13px 15px;color:#536557;white-space:nowrap;font-size:13px;font-weight:650;border-bottom:3px solid transparent}.navinner button.active,.navinner button:hover{color:var(--green);border-color:#55a65e}
+main{max-width:1240px;margin:24px auto;padding:0 22px}
+.hero{border-radius:22px;overflow:hidden;background:linear-gradient(105deg,#103d26 0%,#1c6538 57%,#75a94b 100%);color:#fff;display:grid;grid-template-columns:1.2fr .8fr;min-height:280px;position:relative}
+.hero-copy{padding:38px 42px;position:relative;z-index:1}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#d8f4bd;font-weight:800}.hero h1{font-size:clamp(30px,4vw,46px);line-height:1.08;margin:12px 0;max-width:560px}.hero p{color:#e1f0e1;max-width:470px;line-height:1.6;font-size:14px}.hero button{margin-top:12px;background:#e4f7c7;color:#194c2b;border:0;border-radius:10px;padding:12px 19px;font-weight:800}
+.hero-art{display:grid;place-items:center;font-size:130px;position:relative}.hero-art:before,.hero-art:after{content:"";position:absolute;border:1px solid #ffffff30;border-radius:50%;width:250px;height:250px}.hero-art:after{width:330px;height:330px}.hero-art span{filter:drop-shadow(0 14px 15px #092b1b70);z-index:1}
+.perks{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 30px}.perk{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;align-items:center;gap:11px}.perk i{font-style:normal;font-size:23px}.perk b{display:block;font-size:12px}.perk small{color:var(--muted);font-size:10px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:30px 0 15px}.section-head h2{font-size:23px;margin:0}.section-head p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.categories{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}.cat{border:1px solid var(--line);background:#fff;border-radius:15px;padding:16px 8px;text-align:center;color:var(--ink);transition:.18s}.cat:hover,.cat.selected{border-color:#65a96c;box-shadow:0 5px 18px #1b5c2b12;transform:translateY(-2px)}.cat .emoji{font-size:30px;display:block;margin-bottom:8px}.cat b{font-size:11px;line-height:1.3}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:22px 0 14px}.toolbar-left{font-size:13px;color:var(--muted)}.toolbar select{border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px;color:var(--ink);outline:0}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.product{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.2s;display:flex;flex-direction:column}.product:hover{transform:translateY(-3px);box-shadow:0 10px 25px #163d2412}.product-visual{height:155px;position:relative;overflow:hidden;background:linear-gradient(135deg,#f0f8e9,#e3f1dc)}
+.product-visual img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .3s ease}
+.product:hover .product-visual img{transform:scale(1.045)}
+.product-visual .photo-fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:58px;background:linear-gradient(135deg,#f0f8e9,#e3f1dc)}
+.product-visual .tag{position:absolute;z-index:2;top:11px;left:11px;background:#fff;border-radius:20px;padding:5px 9px;font-size:9px;font-weight:800;color:#28703d;box-shadow:0 2px 8px #18332318}
+.product-detail-photo{width:100%;height:190px;object-fit:cover;border-radius:12px;margin-bottom:14px;background:#f0f8e9}
+.product-detail-fallback{height:150px;display:grid;place-items:center;font-size:64px;background:#f0f8e9;border-radius:12px;margin-bottom:14px}.product-info{padding:14px;display:flex;flex-direction:column;flex:1}.product-category{font-size:10px;color:#6b8a70;text-transform:uppercase;letter-spacing:.7px;font-weight:800}.product h3{font-size:14px;line-height:1.35;margin:7px 0 5px;min-height:38px}.product-desc{font-size:11px;color:var(--muted);line-height:1.45;min-height:32px}.rating{font-size:11px;color:#a66b0c;margin:8px 0}.price-row{display:flex;align-items:baseline;gap:8px;margin-top:auto}.price{font-size:19px;font-weight:850;color:#173f27}.unit{font-size:10px;color:var(--muted)}.product-actions{display:flex;gap:8px;margin-top:12px}.add{flex:1;border:0;border-radius:9px;background:var(--green);color:#fff;padding:10px;font-size:11px;font-weight:800}.details{border:1px solid #dce9d9;background:#fff;border-radius:9px;padding:9px 11px;color:var(--green);font-size:11px;font-weight:750}
+.empty{grid-column:1/-1;text-align:center;padding:45px;background:#fff;border-radius:15px;color:var(--muted)}
+footer{margin-top:55px;background:#103d26;color:#e8f3e8;padding:34px 22px}.foot{max-width:1240px;margin:auto;display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}.foot strong{font-size:20px;letter-spacing:1px}.foot p{font-size:12px;color:#c4d8c6;max-width:420px;line-height:1.6}.foot small{color:#a9c4ad}
+.modal-backdrop{display:none;position:fixed;inset:0;background:#071b10a8;z-index:50;align-items:center;justify-content:center;padding:18px}.modal-backdrop.show{display:flex}.modal{background:#fff;border-radius:18px;max-width:440px;width:100%;padding:24px;position:relative}.close{position:absolute;right:14px;top:12px;border:0;background:#eff5ed;border-radius:50%;width:32px;height:32px;font-size:18px}.modal h2{font-size:20px;margin:8px 0}.modal p{font-size:13px;line-height:1.6;color:var(--muted)}.modal .add{width:100%;margin-top:12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-grid label{font-size:11px;color:#526456;font-weight:700}.form-grid input,.form-grid select,.form-grid textarea{width:100%;margin-top:5px;border:1px solid #dce8da;border-radius:9px;padding:10px;background:#fbfdf9;color:#183323}.form-grid .wide{grid-column:1/-1}.form-grid textarea{min-height:70px;resize:vertical}.modal .secondary{width:100%;margin-top:9px;border:1px solid #dce9d9;background:#fff;color:#14532d;border-radius:9px;padding:10px;font-weight:750}.cart-line{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #edf1eb;padding:10px 0;font-size:12px}.cart-line button{border:1px solid #dce9d9;background:#fff;border-radius:7px;padding:4px 8px;color:#14532d}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);background:#153f27;color:white;padding:12px 18px;border-radius:10px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:80}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.head{gap:12px}.brand{min-width:auto}.brand small{display:none}.head-actions .action:first-child{display:none}.categories{grid-template-columns:repeat(4,1fr)}.products{grid-template-columns:repeat(3,1fr)}.hero{grid-template-columns:1fr .5fr}.hero-art{font-size:95px}}
+@media(max-width:620px){.topline{font-size:10px}.head{padding:12px;flex-wrap:wrap}.brand strong{font-size:18px}.logo{width:37px;height:37px}.search{order:3;flex-basis:100%;height:42px}.head-actions{margin-left:auto}.action{padding:8px 10px;font-size:12px}main{padding:0 13px;margin-top:14px}.hero{grid-template-columns:1fr;min-height:0}.hero-copy{padding:28px 24px}.hero-art{display:none}.hero h1{font-size:32px}.perks{grid-template-columns:repeat(2,1fr);gap:8px}.perk{padding:10px}.categories{grid-template-columns:repeat(3,1fr);gap:8px}.cat{padding:13px 5px}.products{grid-template-columns:repeat(2,1fr);gap:10px}.product-visual{height:125px}.product-visual .photo-fallback{font-size:46px}.product-info{padding:11px}.product h3{font-size:12px}.toolbar{align-items:center}.section-head h2{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="topline">🌱 MARUTHAM FARMER MARKETPLACE · 100 farmer-focused products · Quality farm essentials, all in one place</div>
+<header>
+  <div class="head">
+    <a class="brand" href="#">
+      <span class="logo">🌿</span><span><strong>MARUTHAM</strong><small>EMPOWERING FARMERS</small></span>
+    </a>
+    <form class="search" id="searchForm">
+      <input id="searchInput" type="search" placeholder="Search seeds, tools, fertilizers and more..." aria-label="Search products">
+      <button type="submit">Search</button>
+    </form>
+    <div class="head-actions">
+      <button class="action" onclick="showAccount()">👤 Account</button>
+      <button class="action" onclick="showSellerForm()">＋ Sell</button>
+      <button class="action" onclick="showOrders()">Orders</button>
+      <button class="action" onclick="showCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </div>
+  <nav><div class="navinner" id="navCategories">
+    <button class="active" data-category="All">All Products</button>
+    <button data-category="Seeds">Seeds</button><button data-category="Fertilizers">Fertilizers</button>
+    <button data-category="Crop Protection">Crop Protection</button><button data-category="Tools">Farm Tools</button>
+    <button data-category="Irrigation">Irrigation</button><button data-category="Livestock">Livestock</button>
+  </div></nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <div class="eyebrow">Your farm. Your marketplace.</div>
+      <h1>Everything your farm needs, in one place.</h1>
+      <p>Discover seeds, crop nutrition, farming tools and irrigation essentials selected for the needs of Indian farmers.</p>
+      <button onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore farm products →</button>
+    </div>
+    <div class="hero-art" aria-hidden="true"><span>🌾</span></div>
+  </section>
+
+  <section class="perks">
+    <div class="perk"><i>🚜</i><span><b>Made for farmers</b><small>Only agriculture essentials</small></span></div>
+    <div class="perk"><i>🔎</i><span><b>Easy product discovery</b><small>Search and category filters</small></span></div>
+    <div class="perk"><i>🧺</i><span><b>One simple cart</b><small>Keep your items together</small></span></div>
+    <div class="perk"><i>🌱</i><span><b>Grow with confidence</b><small>Product information at a glance</small></span></div>
+  </section>
+
+  <section>
+    <div class="section-head"><div><h2>Shop by category</h2><p>Find the right essentials for your farm</p></div></div>
+    <div class="categories">
+      <button class="cat selected" data-category="All"><span class="emoji">🛍️</span><b>All Products</b></button>
+      <button class="cat" data-category="Seeds"><span class="emoji">🌱</span><b>Seeds</b></button>
+      <button class="cat" data-category="Fertilizers"><span class="emoji">🪴</span><b>Fertilizers</b></button>
+      <button class="cat" data-category="Crop Protection"><span class="emoji">🛡️</span><b>Crop Protection</b></button>
+      <button class="cat" data-category="Tools"><span class="emoji">🧰</span><b>Farm Tools</b></button>
+      <button class="cat" data-category="Irrigation"><span class="emoji">💧</span><b>Irrigation</b></button>
+      <button class="cat" data-category="Livestock"><span class="emoji">🐄</span><b>Livestock</b></button>
+    </div>
+  </section>
+
+  <section id="shop">
+    <div class="section-head"><div><h2>Farm essentials</h2><p>Browse 100 farmer-focused products across seeds, inputs, tools, irrigation and livestock</p></div></div>
+    <div class="toolbar">
+      <div class="toolbar-left" id="resultCount">Showing all products</div>
+      <select id="sortSelect" aria-label="Sort products">
+        <option value="featured">Sort: Featured</option><option value="low">Price: Low to high</option><option value="high">Price: High to low</option><option value="name">Name: A to Z</option>
+      </select>
+    </div>
+    <div class="products" id="productGrid"></div>
+  </section>
+</main>
+
+<footer><div class="foot">
+  <div><strong>🌿 MARUTHAM</strong><p>Empowering Farmers. Growing the Future. A farmer-focused marketplace concept for agricultural products and services.</p></div>
+  <div><b>Marketplace demo</b><p>100 sample catalogue entries plus browser-only demo profiles, seller listings, cart, checkout and order history. No real accounts, payments, seller notifications or delivery processing are connected.</p><small>© 2026 MARUTHAM · Farmer-first technology</small></div>
+</div></footer>
+
+<div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+ {id:1,name:"Hybrid Vegetable Seed Pack",category:"Seeds",emoji:"🥬",price:249,unit:"per pack",tag:"Popular",desc:"Vegetable seed assortment for home and small farm cultivation.",rating:"★ 4.6",details:"A sample listing for hybrid vegetable seeds. Check crop variety, season, germination rate, packet size and regional suitability with the seller before sowing."},
+ {id:2,name:"Paddy Seeds – Certified",category:"Seeds",emoji:"🌾",price:580,unit:"per 5 kg",tag:"Farmer choice",desc:"Certified paddy seed listing for seasonal cultivation.",rating:"★ 4.5",details:"Confirm the variety, maturity duration, seed certification, recommended season and local agricultural guidance before purchase."},
+ {id:3,name:"Drip Irrigation Starter Kit",category:"Irrigation",emoji:"💧",price:1899,unit:"per kit",tag:"Water smart",desc:"Starter kit concept for efficient water delivery to crops.",rating:"★ 4.7",details:"Check pipe length, emitter spacing, filter, pressure requirements and compatibility with your field layout."},
+ {id:4,name:"Organic Vermicompost",category:"Fertilizers",emoji:"🌿",price:399,unit:"per 25 kg",tag:"Soil care",desc:"Organic soil amendment listing for farm and garden use.",rating:"★ 4.6",details:"Review the product composition, maturity, moisture level, source and recommended application with a qualified local agriculture adviser."},
+ {id:5,name:"NPK Fertilizer",category:"Fertilizers",emoji:"🪴",price:720,unit:"per  bag",tag:"Crop nutrition",desc:"Balanced plant nutrient product listing.",rating:"★ 4.4",details:"Nutrient requirements differ by crop and soil. Use a soil-test-based recommendation and follow the product label."},
+ {id:6,name:"Manual Garden Sprayer",category:"Crop Protection",emoji:"🚿",price:899,unit:"per unit",tag:"Field essential",desc:"Hand-operated sprayer concept for farm applications.",rating:"★ 4.3",details:"Check tank capacity, nozzle type, seals, spare parts and safe-use instructions. Use only approved products according to their labels."},
+ {id:7,name:"Pruning & Harvest Tool Set",category:"Tools",emoji:"✂️",price:649,unit:"per set",tag:"Useful tool",desc:"Basic hand-tool set for pruning and harvest work.",rating:"★ 4.5",details:"Review blade material, grip, maintenance requirements and suitability for your crop."},
+ {id:8,name:"Power Weeder",category:"Tools",emoji:"🚜",price:24500,unit:"per unit",tag:"Farm machinery",desc:"Small-farm machinery listing for weed management.",rating:"★ 4.4",details:"Confirm engine or motor specifications, working width, service availability, warranty, safety features and field suitability."},
+ {id:9,name:"Mulching Film Roll",category:"Irrigation",emoji:"🧵",price:1150,unit:"per roll",tag:"Field support",desc:"Agricultural mulch film listing for moisture and weed management.",rating:"★ 4.2",details:"Check thickness, width, colour, material, UV life and crop-specific recommendations."},
+ {id:10,name:"Neem-Based Crop Care",category:"Crop Protection",emoji:"🍃",price:325,unit:"per bottle",tag:"Plant care",desc:"Neem-based crop-care product listing.",rating:"★ 4.3",details:"Verify registration and label directions where applicable. Do not mix products unless the label or a qualified expert recommends it."},
+ {id:11,name:"Cattle Feed – Balanced Mix",category:"Livestock",emoji:"🐄",price:980,unit:"per 25 kg",tag:"Animal care",desc:"Livestock feed listing for cattle owners.",rating:"★ 4.5",details:"Check ingredients, nutritional analysis, feed suitability by animal age and production stage, storage instructions and seller details."},
+ {id:12,name:"Poultry Feed – Starter",category:"Livestock",emoji:"🐓",price:760,unit:"per 25 kg",tag:"Poultry",desc:"Starter feed listing for poultry farming.",rating:"★ 4.4",details:"Confirm species and age suitability, nutritional specification, manufacture date, storage and feeding guidance."},
+{id:13,name:"Tomato Seeds – Open Pollinated",category:"Seeds",emoji:"🍅",price:180,unit:"per 10 g",tag:"Vegetable seed listing",desc:"Check variety, season, germination rate and regional suitability.",rating:"★ 4.4",details:"Check variety, season, germination rate and regional suitability. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:14,name:"Chilli Seeds – Hybrid",category:"Seeds",emoji:"🌶️",price:420,unit:"per 10 g",tag:"Hybrid seed listing",desc:"Confirm variety, crop duration, disease tolerance and local recommendations.",rating:"★ 4.4",details:"Confirm variety, crop duration, disease tolerance and local recommendations. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:15,name:"Okra Seeds – Improved",category:"Seeds",emoji:"🌱",price:160,unit:"per 100 g",tag:"Vegetable seed listing",desc:"Check seed lot, germination information and sowing season.",rating:"★ 4.4",details:"Check seed lot, germination information and sowing season. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:16,name:"Brinjal Seeds – Hybrid",category:"Seeds",emoji:"🍆",price:350,unit:"per 10 g",tag:"Vegetable seed listing",desc:"Choose a locally suitable variety and verify packet details.",rating:"★ 4.4",details:"Choose a locally suitable variety and verify packet details. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:17,name:"Onion Seeds",category:"Seeds",emoji:"🧅",price:290,unit:"per 50 g",tag:"Vegetable seed listing",desc:"Check variety, season and seed quality details.",rating:"★ 4.4",details:"Check variety, season and seed quality details. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:18,name:"Cucumber Seeds",category:"Seeds",emoji:"🥒",price:210,unit:"per 50 g",tag:"Vegetable seed listing",desc:"Confirm growing season and suitability for your region.",rating:"★ 4.4",details:"Confirm growing season and suitability for your region. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:19,name:"Watermelon Seeds",category:"Seeds",emoji:"🍉",price:520,unit:"per 50 g",tag:"Fruit crop seed listing",desc:"Verify variety, maturity period and packet specifications.",rating:"★ 4.4",details:"Verify variety, maturity period and packet specifications. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:20,name:"Maize Seeds – Hybrid",category:"Seeds",emoji:"🌽",price:680,unit:"per 4 kg",tag:"Field crop seed listing",desc:"Check notified variety information and local sowing guidance.",rating:"★ 4.4",details:"Check notified variety information and local sowing guidance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:21,name:"Ragi Seeds",category:"Seeds",emoji:"🌾",price:240,unit:"per kg",tag:"Millet seed listing",desc:"Confirm seed quality and suitability for local conditions.",rating:"★ 4.4",details:"Confirm seed quality and suitability for local conditions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:22,name:"Groundnut Seeds",category:"Seeds",emoji:"🥜",price:950,unit:"per 5 kg",tag:"Oilseed seed listing",desc:"Check variety, seed treatment information and season.",rating:"★ 4.4",details:"Check variety, seed treatment information and season. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:23,name:"Sunflower Seeds",category:"Seeds",emoji:"🌻",price:390,unit:"per kg",tag:"Oilseed seed listing",desc:"Verify variety and recommended planting window.",rating:"★ 4.4",details:"Verify variety and recommended planting window. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:24,name:"Black Gram Seeds",category:"Seeds",emoji:"🫘",price:180,unit:"per kg",tag:"Pulse seed listing",desc:"Check variety, purity and local crop recommendations.",rating:"★ 4.4",details:"Check variety, purity and local crop recommendations. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:25,name:"Green Gram Seeds",category:"Seeds",emoji:"🫘",price:195,unit:"per kg",tag:"Pulse seed listing",desc:"Confirm seed quality and suitable sowing period.",rating:"★ 4.4",details:"Confirm seed quality and suitable sowing period. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:26,name:"Cowpea Seeds",category:"Seeds",emoji:"🌿",price:220,unit:"per kg",tag:"Pulse and fodder seed listing",desc:"Check variety and intended grain or fodder use.",rating:"★ 4.4",details:"Check variety and intended grain or fodder use. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:27,name:"Sesame Seeds",category:"Seeds",emoji:"🌱",price:260,unit:"per kg",tag:"Oilseed seed listing",desc:"Confirm variety and regional suitability.",rating:"★ 4.4",details:"Confirm variety and regional suitability. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:28,name:"Coriander Seeds for Sowing",category:"Seeds",emoji:"🌿",price:145,unit:"per kg",tag:"Spice crop seed listing",desc:"Use seed intended for sowing and check quality details.",rating:"★ 4.4",details:"Use seed intended for sowing and check quality details. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:29,name:"Fenugreek Seeds for Sowing",category:"Seeds",emoji:"🌿",price:130,unit:"per kg",tag:"Spice crop seed listing",desc:"Verify sowing-grade quality and season.",rating:"★ 4.4",details:"Verify sowing-grade quality and season. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:30,name:"Cabbage Seeds",category:"Seeds",emoji:"🥬",price:310,unit:"per 10 g",tag:"Vegetable seed listing",desc:"Check variety and recommended nursery practices.",rating:"★ 4.4",details:"Check variety and recommended nursery practices. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:31,name:"Cauliflower Seeds",category:"Seeds",emoji:"🥦",price:340,unit:"per 10 g",tag:"Vegetable seed listing",desc:"Confirm season-specific variety and local suitability.",rating:"★ 4.4",details:"Confirm season-specific variety and local suitability. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:32,name:"Bottle Gourd Seeds",category:"Seeds",emoji:"🍈",price:190,unit:"per 50 g",tag:"Vegetable seed listing",desc:"Check variety, packet weight and sowing advice.",rating:"★ 4.4",details:"Check variety, packet weight and sowing advice. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:33,name:"Urea Fertilizer",category:"Fertilizers",emoji:"🧪",price:270,unit:"per  bag",tag:"Nitrogen fertilizer listing",desc:"Buy only sealed, authorized products and follow soil-test-based advice.",rating:"★ 4.4",details:"Buy only sealed, authorized products and follow soil-test-based advice. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:34,name:"DAP Fertilizer",category:"Fertilizers",emoji:"🧪",price:1350,unit:"per bag",tag:"Phosphorus fertilizer listing",desc:"Check grade, sealed packaging and official price information.",rating:"★ 4.4",details:"Check grade, sealed packaging and official price information. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:35,name:"MOP Potash Fertilizer",category:"Fertilizers",emoji:"🧪",price:1650,unit:"per bag",tag:"Potassium fertilizer listing",desc:"Confirm grade and crop requirement using soil-test guidance.",rating:"★ 4.4",details:"Confirm grade and crop requirement using soil-test guidance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:36,name:"SSP Fertilizer",category:"Fertilizers",emoji:"🧪",price:520,unit:"per bag",tag:"Phosphorus and sulphur fertilizer listing",desc:"Verify nutrient analysis and application recommendation.",rating:"★ 4.4",details:"Verify nutrient analysis and application recommendation. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:37,name:"Neem Cake Organic Manure",category:"Fertilizers",emoji:"🍃",price:550,unit:"per 25 kg",tag:"Organic soil input",desc:"Check composition, source and label directions.",rating:"★ 4.4",details:"Check composition, source and label directions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:38,name:"Farmyard Manure",category:"Fertilizers",emoji:"🌱",price:300,unit:"per 25 kg",tag:"Organic soil input",desc:"Check maturity, moisture and source before use.",rating:"★ 4.4",details:"Check maturity, moisture and source before use. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:39,name:"Biofertilizer – Rhizobium",category:"Fertilizers",emoji:"🧫",price:95,unit:"per pack",tag:"Microbial input listing",desc:"Check crop compatibility, expiry date and storage instructions.",rating:"★ 4.4",details:"Check crop compatibility, expiry date and storage instructions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:40,name:"Biofertilizer – Azotobacter",category:"Fertilizers",emoji:"🧫",price:110,unit:"per pack",tag:"Microbial input listing",desc:"Use only as directed on the verified product label.",rating:"★ 4.4",details:"Use only as directed on the verified product label. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:41,name:"Phosphate Solubilizing Bacteria",category:"Fertilizers",emoji:"🧫",price:120,unit:"per pack",tag:"Microbial input listing",desc:"Check crop suitability, expiry and storage conditions.",rating:"★ 4.4",details:"Check crop suitability, expiry and storage conditions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:42,name:"Micronutrient Mixture",category:"Fertilizers",emoji:"🧴",price:260,unit:"per kg",tag:"Micronutrient product listing",desc:"Use based on soil or crop diagnosis and label instructions.",rating:"★ 4.4",details:"Use based on soil or crop diagnosis and label instructions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:43,name:"Zinc Sulphate",category:"Fertilizers",emoji:"🧪",price:185,unit:"per kg",tag:"Micronutrient product listing",desc:"Confirm grade and need through soil or crop testing.",rating:"★ 4.4",details:"Confirm grade and need through soil or crop testing. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:44,name:"Gypsum Soil Amendment",category:"Fertilizers",emoji:"🪨",price:280,unit:"per 25 kg",tag:"Soil amendment listing",desc:"Check soil condition and local agronomy recommendations.",rating:"★ 4.4",details:"Check soil condition and local agronomy recommendations. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:45,name:"Seaweed Extract",category:"Fertilizers",emoji:"🌊",price:390,unit:"per litre",tag:"Biostimulant listing",desc:"Verify composition, registration where applicable and label directions.",rating:"★ 4.4",details:"Verify composition, registration where applicable and label directions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:46,name:"Humic Acid Soil Conditioner",category:"Fertilizers",emoji:"🌱",price:340,unit:"per litre",tag:"Soil conditioner listing",desc:"Review composition and use directions before application.",rating:"★ 4.4",details:"Review composition and use directions before application. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:47,name:"Compost Enriched with Trichoderma",category:"Fertilizers",emoji:"🍂",price:420,unit:"per 25 kg",tag:"Bio-input listing",desc:"Check product quality, expiry and crop-specific advice.",rating:"★ 4.4",details:"Check product quality, expiry and crop-specific advice. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:48,name:"Yellow Sticky Traps",category:"Crop Protection",emoji:"🟨",price:140,unit:"per 10 traps",tag:"Pest monitoring product",desc:"Use for monitoring; identify pest and follow local integrated pest management advice.",rating:"★ 4.4",details:"Use for monitoring; identify pest and follow local integrated pest management advice. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:49,name:"Blue Sticky Traps",category:"Crop Protection",emoji:"🟦",price:150,unit:"per 10 traps",tag:"Pest monitoring product",desc:"Place and replace according to crop advisory guidance.",rating:"★ 4.4",details:"Place and replace according to crop advisory guidance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:50,name:"Pheromone Trap Kit",category:"Crop Protection",emoji:"🪤",price:260,unit:"per kit",tag:"Pest monitoring product",desc:"Select lure specific to the target pest and check replacement schedule.",rating:"★ 4.4",details:"Select lure specific to the target pest and check replacement schedule. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:51,name:"Bird Netting",category:"Crop Protection",emoji:"🕸️",price:850,unit:"per roll",tag:"Crop protection material",desc:"Check mesh size, dimensions and crop suitability.",rating:"★ 4.4",details:"Check mesh size, dimensions and crop suitability. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:52,name:"Insect-Proof Nursery Net",category:"Crop Protection",emoji:"🕸️",price:1250,unit:"per roll",tag:"Nursery protection material",desc:"Confirm mesh, UV resistance and installation requirements.",rating:"★ 4.4",details:"Confirm mesh, UV resistance and installation requirements. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:53,name:"Hand Weeder",category:"Tools",emoji:"🧰",price:180,unit:"per unit",tag:"Manual farm tool",desc:"Check handle comfort, material and suitability for the task.",rating:"★ 4.4",details:"Check handle comfort, material and suitability for the task. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:54,name:"Khurpi Hand Hoe",category:"Tools",emoji:"🪓",price:160,unit:"per unit",tag:"Manual farm tool",desc:"Check blade quality and handle attachment.",rating:"★ 4.4",details:"Check blade quality and handle attachment. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:55,name:"Garden Spade",category:"Tools",emoji:"🛠️",price:420,unit:"per unit",tag:"Manual farm tool",desc:"Review blade material, handle and dimensions.",rating:"★ 4.4",details:"Review blade material, handle and dimensions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:56,name:"Long Handle Hoe",category:"Tools",emoji:"🧰",price:380,unit:"per unit",tag:"Manual farm tool",desc:"Choose a suitable length and inspect handle strength.",rating:"★ 4.4",details:"Choose a suitable length and inspect handle strength. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:57,name:"Sickle – Harvesting",category:"Tools",emoji:"🌾",price:190,unit:"per unit",tag:"Harvest tool",desc:"Check grip, blade quality and safe storage.",rating:"★ 4.4",details:"Check grip, blade quality and safe storage. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:58,name:"Wheelbarrow",category:"Tools",emoji:"🛒",price:2450,unit:"per unit",tag:"Farm transport tool",desc:"Confirm load capacity, wheel type and assembly requirements.",rating:"★ 4.4",details:"Confirm load capacity, wheel type and assembly requirements. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:59,name:"Knapsack Sprayer – Manual",category:"Tools",emoji:"🚿",price:1450,unit:"per unit",tag:"Farm application equipment",desc:"Check capacity, seals, nozzle options and maintenance support.",rating:"★ 4.4",details:"Check capacity, seals, nozzle options and maintenance support. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:60,name:"Battery Sprayer",category:"Tools",emoji:"🔋",price:3850,unit:"per unit",tag:"Farm application equipment",desc:"Check battery rating, warranty, service support and safe-use manual.",rating:"★ 4.4",details:"Check battery rating, warranty, service support and safe-use manual. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:61,name:"Soil pH Meter",category:"Tools",emoji:"📟",price:690,unit:"per unit",tag:"Soil testing instrument",desc:"Use as a basic indicator; compare important decisions with a laboratory soil test.",rating:"★ 4.4",details:"Use as a basic indicator; compare important decisions with a laboratory soil test. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:62,name:"Digital Soil Thermometer",category:"Tools",emoji:"🌡️",price:520,unit:"per unit",tag:"Field measurement tool",desc:"Check measurement range and calibration instructions.",rating:"★ 4.4",details:"Check measurement range and calibration instructions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:63,name:"Rain Gauge",category:"Tools",emoji:"🌧️",price:390,unit:"per unit",tag:"Weather monitoring tool",desc:"Install in an open location and follow measurement instructions.",rating:"★ 4.4",details:"Install in an open location and follow measurement instructions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:64,name:"Moisture Meter for Grain",category:"Tools",emoji:"📟",price:1850,unit:"per unit",tag:"Post-harvest instrument",desc:"Check crop calibration, measurement range and accuracy information.",rating:"★ 4.4",details:"Check crop calibration, measurement range and accuracy information. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:65,name:"Tarpaulin Sheet",category:"Tools",emoji:"🟦",price:980,unit:"per sheet",tag:"Post-harvest farm material",desc:"Confirm dimensions, thickness and weather resistance.",rating:"★ 4.4",details:"Confirm dimensions, thickness and weather resistance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:66,name:"Harvest Crates",category:"Tools",emoji:"📦",price:240,unit:"per crate",tag:"Produce handling material",desc:"Check dimensions, ventilation and load capacity.",rating:"★ 4.4",details:"Check dimensions, ventilation and load capacity. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:67,name:"Seedling Pro-Tray",category:"Tools",emoji:"🌱",price:95,unit:"per tray",tag:"Nursery equipment",desc:"Choose cell size suitable for the crop and nursery method.",rating:"★ 4.4",details:"Choose cell size suitable for the crop and nursery method. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:68,name:"Mini Power Tiller",category:"Tools",emoji:"🚜",price:38500,unit:"per unit",tag:"Farm machinery listing",desc:"Verify specifications, service network, warranty and safety features.",rating:"★ 4.4",details:"Verify specifications, service network, warranty and safety features. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:69,name:"Sprinkler Set",category:"Irrigation",emoji:"💦",price:1250,unit:"per set",tag:"Water application equipment",desc:"Check operating pressure, coverage and water source compatibility.",rating:"★ 4.4",details:"Check operating pressure, coverage and water source compatibility. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:70,name:"Drip Filter",category:"Irrigation",emoji:"💧",price:780,unit:"per unit",tag:"Drip irrigation component",desc:"Select filter type and capacity based on water quality and system design.",rating:"★ 4.4",details:"Select filter type and capacity based on water quality and system design. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:71,name:"Drip Lateral Pipe",category:"Irrigation",emoji:"〰️",price:1150,unit:"per roll",tag:"Drip irrigation component",desc:"Confirm diameter, thickness, emitter spacing and length.",rating:"★ 4.4",details:"Confirm diameter, thickness, emitter spacing and length. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:72,name:"HDPE Irrigation Pipe",category:"Irrigation",emoji:"〰️",price:1650,unit:"per roll",tag:"Irrigation pipe listing",desc:"Check pressure rating, diameter and fittings.",rating:"★ 4.4",details:"Check pressure rating, diameter and fittings. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:73,name:"Venturi Fertilizer Injector",category:"Irrigation",emoji:"🔧",price:950,unit:"per unit",tag:"Fertigation component",desc:"Confirm compatibility with pipe size and system pressure.",rating:"★ 4.4",details:"Confirm compatibility with pipe size and system pressure. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:74,name:"Water Pump – 1 HP",category:"Irrigation",emoji:"⚙️",price:6800,unit:"per unit",tag:"Water pump listing",desc:"Check power supply, head, flow rate, warranty and electrical safety.",rating:"★ 4.4",details:"Check power supply, head, flow rate, warranty and electrical safety. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:75,name:"Solar Water Pump Controller",category:"Irrigation",emoji:"☀️",price:5200,unit:"per unit",tag:"Solar irrigation component",desc:"Confirm compatibility with the installed pump system and qualified installer.",rating:"★ 4.4",details:"Confirm compatibility with the installed pump system and qualified installer. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:76,name:"Irrigation Hose Pipe",category:"Irrigation",emoji:"💦",price:620,unit:"per roll",tag:"Water delivery product",desc:"Check diameter, length and pressure suitability.",rating:"★ 4.4",details:"Check diameter, length and pressure suitability. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:77,name:"Micro Sprinkler Set",category:"Irrigation",emoji:"🌧️",price:1450,unit:"per set",tag:"Micro-irrigation component",desc:"Check spacing, flow rate and field layout compatibility.",rating:"★ 4.4",details:"Check spacing, flow rate and field layout compatibility. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:78,name:"Water Storage Tank",category:"Irrigation",emoji:"🛢️",price:4200,unit:"per tank",tag:"Farm water storage",desc:"Confirm capacity, material, installation base and warranty.",rating:"★ 4.4",details:"Confirm capacity, material, installation base and warranty. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:79,name:"Cattle Mineral Mixture",category:"Livestock",emoji:"🐄",price:360,unit:"per kg",tag:"Livestock nutrition listing",desc:"Choose according to species and production stage with veterinary or livestock adviser guidance.",rating:"★ 4.4",details:"Choose according to species and production stage with veterinary or livestock adviser guidance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:80,name:"Calf Starter Feed",category:"Livestock",emoji:"🐮",price:780,unit:"per 25 kg",tag:"Livestock feed listing",desc:"Check age suitability, nutritional analysis and feeding guidance.",rating:"★ 4.4",details:"Check age suitability, nutritional analysis and feeding guidance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:81,name:"Dairy Cattle Feed",category:"Livestock",emoji:"🐄",price:920,unit:"per 25 kg",tag:"Livestock feed listing",desc:"Review ingredients and suitability for the animal's production stage.",rating:"★ 4.4",details:"Review ingredients and suitability for the animal's production stage. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:82,name:"Goat Feed Mix",category:"Livestock",emoji:"🐐",price:850,unit:"per 25 kg",tag:"Small ruminant feed listing",desc:"Check species, age suitability and nutritional details.",rating:"★ 4.4",details:"Check species, age suitability and nutritional details. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:83,name:"Sheep Feed Mix",category:"Livestock",emoji:"🐑",price:820,unit:"per 25 kg",tag:"Small ruminant feed listing",desc:"Confirm formulation and feeding advice with a livestock expert.",rating:"★ 4.4",details:"Confirm formulation and feeding advice with a livestock expert. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:84,name:"Poultry Feed – Grower",category:"Livestock",emoji:"🐓",price:810,unit:"per 25 kg",tag:"Poultry feed listing",desc:"Check bird age, nutritional analysis and storage conditions.",rating:"★ 4.4",details:"Check bird age, nutritional analysis and storage conditions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:85,name:"Poultry Feed – Layer",category:"Livestock",emoji:"🥚",price:890,unit:"per 25 kg",tag:"Poultry feed listing",desc:"Confirm layer-stage formulation and feeding guidance.",rating:"★ 4.4",details:"Confirm layer-stage formulation and feeding guidance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:86,name:"Azolla Cultivation Tray",category:"Livestock",emoji:"🌿",price:650,unit:"per kit",tag:"Livestock fodder production",desc:"Follow locally recommended cultivation and hygiene guidance.",rating:"★ 4.4",details:"Follow locally recommended cultivation and hygiene guidance. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:87,name:"Fodder Maize Seed",category:"Livestock",emoji:"🌽",price:260,unit:"per kg",tag:"Fodder seed listing",desc:"Check fodder variety and local sowing season.",rating:"★ 4.4",details:"Check fodder variety and local sowing season. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:88,name:"Napier Grass Slips",category:"Livestock",emoji:"🌱",price:480,unit:"per bundle",tag:"Fodder planting material",desc:"Verify variety, freshness and suitability for local conditions.",rating:"★ 4.4",details:"Verify variety, freshness and suitability for local conditions. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:89,name:"Silage Cover Sheet",category:"Livestock",emoji:"🟩",price:1850,unit:"per sheet",tag:"Fodder storage material",desc:"Check dimensions, thickness and storage method.",rating:"★ 4.4",details:"Check dimensions, thickness and storage method. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:90,name:"Milking Machine – Portable",category:"Livestock",emoji:"🥛",price:18500,unit:"per unit",tag:"Dairy equipment listing",desc:"Check animal compatibility, cleaning requirements, warranty and service support.",rating:"★ 4.4",details:"Check animal compatibility, cleaning requirements, warranty and service support. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:91,name:"Cattle Water Trough",category:"Livestock",emoji:"🐄",price:1250,unit:"per unit",tag:"Livestock equipment",desc:"Confirm capacity, material, stability and ease of cleaning.",rating:"★ 4.4",details:"Confirm capacity, material, stability and ease of cleaning. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:92,name:"Poultry Feeder",category:"Livestock",emoji:"🐔",price:180,unit:"per unit",tag:"Poultry equipment",desc:"Check capacity, material and suitability for bird age.",rating:"★ 4.4",details:"Check capacity, material and suitability for bird age. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:93,name:"Poultry Drinker",category:"Livestock",emoji:"🚰",price:160,unit:"per unit",tag:"Poultry equipment",desc:"Check capacity, cleaning method and compatibility with the housing system.",rating:"★ 4.4",details:"Check capacity, cleaning method and compatibility with the housing system. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:94,name:"Dairy Can – Stainless Steel",category:"Livestock",emoji:"🥛",price:1450,unit:"per unit",tag:"Milk handling equipment",desc:"Check food-grade material, capacity and lid seal.",rating:"★ 4.4",details:"Check food-grade material, capacity and lid seal. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:95,name:"Animal Grooming Brush",category:"Livestock",emoji:"🐄",price:220,unit:"per unit",tag:"Livestock care tool",desc:"Choose a suitable brush and clean it regularly.",rating:"★ 4.4",details:"Choose a suitable brush and clean it regularly. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:96,name:"Beekeeping Protective Suit",category:"Tools",emoji:"🐝",price:1650,unit:"per suit",tag:"Beekeeping equipment",desc:"Check fit, veil visibility and protective coverage.",rating:"★ 4.4",details:"Check fit, veil visibility and protective coverage. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:97,name:"Beekeeping Hive Box",category:"Tools",emoji:"🐝",price:2850,unit:"per box",tag:"Beekeeping equipment",desc:"Check dimensions and suitability for the locally managed bee species.",rating:"★ 4.4",details:"Check dimensions and suitability for the locally managed bee species. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:98,name:"Harvesting Gloves",category:"Tools",emoji:"🧤",price:140,unit:"per pair",tag:"Farm safety accessory",desc:"Choose task-appropriate gloves and inspect for wear.",rating:"★ 4.4",details:"Choose task-appropriate gloves and inspect for wear. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:99,name:"Protective Safety Goggles",category:"Tools",emoji:"🥽",price:180,unit:"per pair",tag:"Farm safety accessory",desc:"Choose certified protection appropriate to the task and product label.",rating:"★ 4.4",details:"Choose certified protection appropriate to the task and product label. Confirm specifications, supplier credentials, current price and local suitability before purchase."},
+{id:100,name:"Reusable Produce Bags",category:"Tools",emoji:"🧺",price:320,unit:"per pack",tag:"Harvest handling material",desc:"Check size, material and ventilation needs.",rating:"★ 4.4",details:"Check size, material and ventilation needs. Confirm specifications, supplier credentials, current price and local suitability before purchase."}
+];
+
+/* Representative category photography for the demo catalogue.
+   These are not verified photos of each exact product/SKU. */
+const productPhotos = {
+  "Seeds": [
+    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=85"
+  ],
+  "Fertilizers": [
+    "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=85"
+  ],
+  "Crop Protection": [
+    "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=900&q=85"
+  ],
+  "Tools": [
+    "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=85"
+  ],
+  "Irrigation": [
+    "https://images.unsplash.com/photo-1560693225-b8507dcb9b52?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=85"
+  ],
+  "Livestock": [
+    "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=900&q=85",
+    "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=85"
+  ]
+};
+function photoFor(product){
+  const photos=productPhotos[product.category];
+  if(!photos || !photos.length) return "";
+  return photos[Math.abs(Number(product.id)||0) % photos.length];
+}
+function productPhotoMarkup(product, detail=false){
+  const photo=photoFor(product);
+  const fallbackClass=detail ? "product-detail-fallback" : "photo-fallback";
+  const imageClass=detail ? "product-detail-photo" : "";
+  const fallbackStyle=photo ? 'style="display:none"' : "";
+  return `${photo ? `<img class="${imageClass}" src="${photo}" alt="${escapeAttr(product.name)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">` : ""}<div class="${fallbackClass}" ${fallbackStyle}>${product.emoji||"🌱"}</div>`;
+}
+let activeCategory="All", cart=[];
+const grid=document.getElementById("productGrid"), searchInput=document.getElementById("searchInput");
+function money(n){return "₹"+n.toLocaleString("en-IN")}
+function filtered(){
+ let q=searchInput.value.trim().toLowerCase();
+ let list=products.filter(p=>(activeCategory==="All"||p.category===activeCategory)&&[p.name,p.category,p.desc].join(" ").toLowerCase().includes(q));
+ const sort=document.getElementById("sortSelect").value;
+ if(sort==="low")list.sort((a,b)=>a.price-b.price);
+ if(sort==="high")list.sort((a,b)=>b.price-a.price);
+ if(sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name));
+ return list;
+}
+function render(){
+ const list=filtered();
+ document.getElementById("resultCount").textContent=`Showing ${list.length} of ${products.length} farm products`;
+ grid.replaceChildren();
+ if(!list.length){grid.innerHTML='<div class="empty">🌱<h3>No matching farm products</h3><p>Try another search or category.</p></div>';return}
+ list.forEach(p=>{
+  const card=document.createElement("article");card.className="product";
+  card.innerHTML=`<div class="product-visual">${productPhotoMarkup(p)}<span class="tag">${p.tag}</span></div>
+   <div class="product-info"><div class="product-category">${p.category}</div><h3>${p.name}</h3><div class="product-desc">${p.desc}</div>
+   <div class="rating">${p.rating} <span style="color:#849286">· Demo rating</span></div>
+   <div class="price-row"><span class="price">${money(p.price)}</span><span class="unit">${p.unit}</span></div>
+   <div class="product-actions"><button class="add" onclick="addToCart(${p.id})">Add to cart</button><button class="details" onclick="showDetails(${p.id})">Details</button></div></div>`;
+  grid.appendChild(card);
+ });
+}
+function setCategory(cat){
+ activeCategory=cat;
+ document.querySelectorAll("[data-category]").forEach(b=>b.classList.toggle("active",b.closest(".navinner")&&b.dataset.category===cat));
+ document.querySelectorAll(".cat").forEach(b=>b.classList.toggle("selected",b.dataset.category===cat));
+ render();
+}
+document.querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>{setCategory(b.dataset.category);document.getElementById("shop").scrollIntoView({behavior:"smooth",block:"start"})}));
+document.getElementById("searchForm").addEventListener("submit",e=>{e.preventDefault();render();document.getElementById("shop").scrollIntoView({behavior:"smooth"})});
+searchInput.addEventListener("input",render);
+document.getElementById("sortSelect").addEventListener("change",render);
+
+let currentUser=JSON.parse(localStorage.getItem("maruthamUser")||"null");
+let orders=JSON.parse(localStorage.getItem("maruthamOrders")||"[]");
+let savedCart=JSON.parse(localStorage.getItem("maruthamCart")||"[]");
+if(savedCart.length) cart=savedCart;
+function persistCart(){localStorage.setItem("maruthamCart",JSON.stringify(cart))}
+function addToCart(id){const p=products.find(x=>x.id===id);if(!p)return;const item=cart.find(x=>x.id===id);if(item)item.qty++;else cart.push({...p,qty:1});updateCart();persistCart();showToast(p.name+" added to cart");}
+function updateCart(){document.getElementById("cartCount").textContent=cart.reduce((n,p)=>n+p.qty,0)}
+function changeQty(id,delta){const item=cart.find(x=>x.id===id);if(!item)return;item.qty+=delta;if(item.qty<=0)cart=cart.filter(x=>x.id!==id);updateCart();persistCart();showCart()}
+function removeCartItem(id){cart=cart.filter(x=>x.id!==id);updateCart();persistCart();showCart()}
+function showCart(){
+ const total=cart.reduce((n,p)=>n+p.price*p.qty,0);
+ document.getElementById("modalContent").innerHTML=`<div class="product-category">YOUR MARUTHAM CART</div><h2>🛒 Shopping cart</h2>${cart.length?cart.map(p=>`<div class="cart-line"><div><b>${p.name}</b><br>${money(p.price)} ${p.unit}<br><button onclick="changeQty(${p.id},-1)">−</button> ${p.qty} <button onclick="changeQty(${p.id},1)">+</button> <button onclick="removeCartItem(${p.id})">Remove</button></div><b>${money(p.qty*p.price)}</b></div>`).join(""):`<p>Your cart is empty. Add some farm essentials to get started.</p>`}<hr><h3>Subtotal: ${money(total)}</h3>${cart.length?'<button class="add" onclick="showCheckout()">Continue to demo checkout</button>':''}<p style="font-size:11px">Demo checkout only. No payment is collected.</p>`;
+ openModal();
+}
+function showAccount(){
+ const name=currentUser?.name||"";
+ document.getElementById("modalContent").innerHTML=`<div class="product-category">MARUTHAM PROFILE</div><h2>👤 Farmer / Buyer Account</h2><p>This prototype saves a local demo profile in this browser. It does not create a secure online account.</p><div class="form-grid"><label class="wide">Display name<input id="profileName" value="${escapeAttr(name)}" placeholder="Enter a display name"></label><label class="wide">I am a<select id="profileRole"><option value="Farmer">Farmer / Buyer</option><option value="Seller" ${currentUser?.role==="Seller"?"selected":""}>Seller</option></select></label></div><button class="add" onclick="saveAccount()">Save demo profile</button>${currentUser?'<button class="secondary" onclick="logoutDemo()">Clear demo profile</button>':''}`;
+ openModal();
+}
+function saveAccount(){const name=document.getElementById("profileName").value.trim();if(!name){showToast("Please enter a display name");return}currentUser={name,role:document.getElementById("profileRole").value};localStorage.setItem("maruthamUser",JSON.stringify(currentUser));closeModal();showToast("Demo profile saved")}
+function logoutDemo(){currentUser=null;localStorage.removeItem("maruthamUser");closeModal();showToast("Demo profile cleared")}
+function showSellerForm(){
+ document.getElementById("modalContent").innerHTML=`<div class="product-category">SELL ON MARUTHAM</div><h2>＋ Add a farm product</h2><p>Add a sample listing to the marketplace. It will be saved only in this browser.</p><div class="form-grid"><label class="wide">Product name<input id="sellerName" placeholder="e.g. Certified ragi seeds" maxlength="70"></label><label>Category<select id="sellerCategory"><option>Seeds</option><option>Fertilizers</option><option>Crop Protection</option><option>Tools</option><option>Irrigation</option><option>Livestock</option></select></label><label>Price (₹)<input id="sellerPrice" type="number" min="1" max="10000000" placeholder="e.g. 350"></label><label>Unit<input id="sellerUnit" value="per unit" maxlength="25"></label><label>Emoji<input id="sellerEmoji" value="🌱" maxlength="4"></label><label class="wide">Short description<textarea id="sellerDesc" maxlength="180" placeholder="Describe the product and its use"></textarea></label></div><button class="add" onclick="addSellerProduct()">Publish demo listing</button>`;
+ openModal();
+}
+function addSellerProduct(){
+ const name=document.getElementById("sellerName").value.trim(),price=Number(document.getElementById("sellerPrice").value),category=document.getElementById("sellerCategory").value;
+ if(!name||!Number.isFinite(price)||price<=0){showToast("Enter a product name and valid price");return}
+ const p={id:Date.now(),name,category,emoji:document.getElementById("sellerEmoji").value.trim()||"🌱",price,unit:document.getElementById("sellerUnit").value.trim()||"per unit",tag:"Seller listing",desc:document.getElementById("sellerDesc").value.trim()||"Farmer-listed sample product.",rating:"Not rated",details:"Seller-entered demo listing. Verify supplier, product quality, price and applicable requirements before purchase."};
+ products.unshift(p);const listings=JSON.parse(localStorage.getItem("maruthamListings")||"[]");listings.unshift(p);localStorage.setItem("maruthamListings",JSON.stringify(listings));closeModal();render();showToast("Demo product published");
+}
+function showCheckout(){
+ if(!cart.length){showToast("Your cart is empty");return}
+ document.getElementById("modalContent").innerHTML=`<div class="product-category">DEMO ORDER</div><h2>📦 Checkout</h2><p>Use sample details to test order creation. Do not enter real payment information. This prototype does not send orders to sellers.</p><div class="form-grid"><label class="wide">Recipient name<input id="orderName" maxlength="70" placeholder="Sample name"></label><label class="wide">Delivery address<input id="orderAddress" maxlength="180" placeholder="Sample village / town and address"></label><label class="wide">Contact number<input id="orderPhone" inputmode="numeric" maxlength="15" placeholder="Sample contact number"></label></div><h3>Order total: ${money(cart.reduce((n,p)=>n+p.price*p.qty,0))}</h3><button class="add" onclick="placeDemoOrder()">Place demo order (no payment)</button>`;
+ openModal();
+}
+function placeDemoOrder(){
+ const name=document.getElementById("orderName").value.trim(),address=document.getElementById("orderAddress").value.trim(),phone=document.getElementById("orderPhone").value.trim();
+ if(!name||!address||!phone){showToast("Fill in all demo delivery fields");return}
+ const order={id:"MAR"+Date.now().toString().slice(-8),date:new Date().toLocaleString(),name,address,phone,items:cart.map(p=>({id:p.id,name:p.name,qty:p.qty,price:p.price})),total:cart.reduce((n,p)=>n+p.price*p.qty,0),status:"Demo order placed"};
+ orders.unshift(order);localStorage.setItem("maruthamOrders",JSON.stringify(orders));cart=[];persistCart();updateCart();document.getElementById("modalContent").innerHTML=`<div style="font-size:42px">✅</div><h2>Demo order created!</h2><p>Order ID: <b>${order.id}</b></p><p>Total: <b>${money(order.total)}</b></p><p>No payment was taken and no seller was notified. This order is stored only in this browser.</p><button class="add" onclick="showOrders()">View my orders</button>`;showToast("Demo order created");
+}
+function showOrders(){
+ document.getElementById("modalContent").innerHTML=`<div class="product-category">ORDER HISTORY</div><h2>📦 My orders</h2>${orders.length?orders.map(o=>`<div class="cart-line"><div><b>${o.id}</b><br>${o.date}<br>${o.items.map(i=>`${i.name} × ${i.qty}`).join("<br>")}<br><small>${o.status}</small></div><b>${money(o.total)}</b></div>`).join(""):"<p>No demo orders yet. Place an order through the cart to see it here.</p>"}<p style="font-size:11px">Orders are saved in this browser only.</p>`;
+ openModal();
+}
+function escapeAttr(value){return String(value||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function showDetails(id){
+ const p=products.find(x=>x.id===id);
+ if(!p)return;
+ document.getElementById("modalContent").innerHTML=`${productPhotoMarkup(p,true)}<div class="product-category">${p.category}</div><h2>${p.name}</h2><h3 style="color:#14532d">${money(p.price)} <small style="font-size:12px;color:#778579">${p.unit}</small></h3><p>${p.details}</p><p style="font-size:11px">Sample catalogue entry. Category photos are illustrative; verify the exact product, price, stock and seller before purchase.</p><button class="add" onclick="addToCart(${p.id});closeModal()">Add to cart</button>`;
+ openModal();
+}
+function openModal(){document.getElementById("modalBackdrop").classList.add("show")}
+function closeModal(){document.getElementById("modalBackdrop").classList.remove("show")}
+let toastTimer;function showToast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2200)}
+const storedListings=JSON.parse(localStorage.getItem("maruthamListings")||"[]");
+storedListings.forEach(p=>{if(!products.some(x=>x.id===p.id))products.unshift(p)});
+updateCart();
+render();
+</script>
+</body>
+</html>

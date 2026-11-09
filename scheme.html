@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MARUTHAM | Farmer Government Scheme Finder</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary: #12452d;
+  --accent: #176e3c;
+  --accent-light: #e6f5e9;
+  --bg: #f4f8f4;
+  --text: #183c2b;
+  --muted: #5e7565;
+  --card-border: #dfebe1;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 50px;
+}
+
+header {
+  background: var(--primary);
+  color: white;
+  padding: 16px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 800;
+  color: #a8ed91;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero {
+  background: linear-gradient(120deg, #12452d 0%, #1e7a46 100%);
+  color: white;
+  padding: 24px 5%;
+}
+
+.hero h1 { font-size: 22px; margin-bottom: 6px; }
+.hero p { font-size: 13px; opacity: 0.9; line-height: 1.4; }
+
+.container {
+  width: 94%;
+  max-width: 1100px;
+  margin: 16px auto;
+}
+
+/* SEARCH & FILTER CONTROLS */
+.filter-panel {
+  background: white;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  margin-bottom: 16px;
+}
+
+.search-box {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #c7d9cc;
+  border-radius: 9px;
+  font-size: 13px;
+  outline: none;
+  margin-bottom: 10px;
+}
+
+.search-box:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(23, 110, 60, 0.12);
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #c7d9cc;
+  border-radius: 8px;
+  font-size: 12px;
+  background: #fbfdfb;
+  outline: none;
+}
+
+.pill-group {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.pill-btn {
+  white-space: nowrap;
+  padding: 5px 11px;
+  border-radius: 16px;
+  border: 1px solid #c7d9cc;
+  background: white;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.pill-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.results-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* SCHEME GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.badge-strip {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: var(--accent-light);
+  color: var(--accent);
+  text-transform: uppercase;
+}
+
+.badge-state {
+  background: #fff3d6;
+  color: #925805;
+}
+
+.card h3 {
+  font-size: 14px;
+  color: var(--primary);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.card p {
+  font-size: 12px;
+  color: #496352;
+  line-height: 1.45;
+  margin-bottom: 10px;
+  flex: 1;
+}
+
+.card-footer {
+  border-top: 1px solid #f0f5f1;
+  padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-details {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 6px 11px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* MODAL */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+
+.modal-backdrop.show { display: flex; }
+
+.modal-box {
+  background: white;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 20px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: #edf3ee;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.modal-section { margin: 12px 0; }
+.modal-section b {
+  display: block;
+  font-size: 11px;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.modal-section p {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #2b4534;
+}
+
+.apply-btn {
+  display: block;
+  text-align: center;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 12px;
+  margin-top: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">🌱 MARUTHAM</div>
+  <div style="font-size: 11px; opacity: 0.9;">Official Schemes Explorer</div>
+</header>
+
+<section class="hero">
+  <h1>Government Schemes Directory</h1>
+  <p>Search over 25 central and state agricultural support programs, loans, machinery subsidies, and crop insurance.</p>
+</section>
+
+<main class="container">
+
+  <div class="filter-panel">
+    <input
+      type="search"
+      class="search-box"
+      id="schemeSearch"
+      placeholder="Search by scheme name or keywords (e.g. solar, drip, loan, seeds, ragi)..."
+      aria-label="Search schemes"
+    >
+
+    <div class="filter-row">
+      <select class="filter-select" id="stateFilter">
+        <option value="All">Location: All / Pan-India</option>
+        <option value="Pan-India">Pan-India (Central)</option>
+        <option value="Karnataka">Karnataka</option>
+        <option value="Tamil Nadu">Tamil Nadu</option>
+        <option value="Maharashtra">Maharashtra</option>
+      </select>
+
+      <select class="filter-select" id="farmerTypeFilter">
+        <option value="All">Farmer Type: Any</option>
+        <option value="Small & Marginal">Small & Marginal (&lt; 2 Hectares)</option>
+        <option value="All Landholders">All Landholders</option>
+        <option value="FPO & Allied">FPOs & Agri-Entrepreneurs</option>
+        <option value="Dairy & Livestock">Dairy & Livestock</option>
+      </select>
+    </div>
+
+    <div class="pill-group" id="categoryPills"></div>
+  </div>
+
+  <div class="results-meta">
+    <span id="resultsCount">Loading programmes...</span>
+    <small>Data Source: myScheme / Ministry of Agriculture</small>
+  </div>
+
+  <div class="grid" id="schemesGrid"></div>
+
+</main>
+
+<div class="modal-backdrop" id="schemeModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalDetails"></div>
+  </div>
+</div>
+
+<script>
+const schemesData = [
+  {
+    id: "pm-kisan",
+    name: "PM-KISAN Samman Nidhi",
+    category: "Income Support",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Annual financial support of ₹6,000 paid in 3 four-monthly installments of ₹2,000 directly to bank accounts.",
+    eligibility: "Landholding farmer families with cultivable land registered in their name, subject to exclusion criteria.",
+    benefits: "Direct financial support of ₹6,000 annually via Direct Benefit Transfer (DBT).",
+    documents: "Identity proof [Aadhaar/Voter ID/PAN], Bank account details, Landownership registry / RoR.",
+    portal: "https://pmkisan.gov.in/"
+  },
+  {
+    id: "pmfby",
+    name: "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    category: "Crop Insurance",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Affordable crop insurance coverage against natural calamities, pests, and unseasonal weather.",
+    eligibility: "Farmers growing notified crops in notified areas, including sharecroppers and tenant cultivators.",
+    benefits: "Maximum premium of 2% for Kharif, 1.5% for Rabi, and 5% for horticultural/commercial crops; government pays remainder.",
+    documents: "Land records / Sowing Certificate, Bank passbook copy, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://pmfby.gov.in/"
+  },
+  {
+    id: "kcc",
+    name: "Kisan Credit Card (KCC)",
+    category: "Credit & Loans",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Concessional institutional short-term credit line for cultivation expenses, harvesting, and equipment.",
+    eligibility: "Individual farmers, joint borrowers, tenant cultivators, oral lessees, and SHGs.",
+    benefits: "Credit up to ₹3,00,000 at 7% base interest rate, reduced to 4% with prompt repayment subvention.",
+    documents: "Identity & Address proof [Aadhaar/Voter ID/PAN], Land record documents, Loan application form.",
+    portal: "https://www.myscheme.gov.in/schemes/kcc"
+  },
+  {
+    id: "pm-kusum",
+    name: "PM-KUSUM (Solar Pumps Scheme)",
+    category: "Solar & Energy",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Subsidies up to 60% for installing standalone solar agricultural pumps and solarizing grid tubewells.",
+    eligibility: "Individual farmers, water user associations, and cooperatives.",
+    benefits: "60% total financial subsidy (30% Central + 30% State), reducing diesel and electricity costs.",
+    documents: "Land ownership records, Water source confirmation, Bank passbook, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://pmkusum.mnre.gov.in/"
+  },
+  {
+    id: "per-drop",
+    name: "Per Drop More Crop (Micro-Irrigation)",
+    category: "Irrigation",
+    scope: "Pan-India",
+    farmerType: "Small & Marginal",
+    summary: "Assistance up to 55% for installing drip and sprinkler systems to improve water-use efficiency.",
+    eligibility: "Farmers with cultivable land and an assured water source.",
+    benefits: "55% subsidy for small/marginal farmers; 45% for other category cultivators.",
+    documents: "RTC / Land record, Water source certificate, Bank passbook, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://pmksy.gov.in/"
+  },
+  {
+    id: "smam",
+    name: "Sub-Mission on Agricultural Mechanization (SMAM)",
+    category: "Machinery",
+    scope: "Pan-India",
+    farmerType: "Small & Marginal",
+    summary: "Subsidies up to 40%–50% on purchase of tractors, power tillers, rotavators, and weeders.",
+    eligibility: "Individual farmers, small & marginal landholders, women farmers, and registered FPOs.",
+    benefits: "Financial subsidy up to 50% on registered implements and Custom Hiring Center setups.",
+    documents: "Land RTC / Pahani, Machine quotation from authorized dealer, Bank passbook.",
+    portal: "https://agrimachinery.nic.in/"
+  },
+  {
+    id: "soil-health",
+    name: "Soil Health Card Scheme",
+    category: "Soil & Testing",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Periodic testing and issuance of cards indicating soil nutrient status and recommended fertilizer doses.",
+    eligibility: "All farmers owning or cultivating agricultural land.",
+    benefits: "Clear analysis of 12 critical soil parameters (N, P, K, pH, micronutrients) to optimize fertilizer spending.",
+    documents: "Survey number and sample collected by agricultural assistant.",
+    portal: "https://soilhealth.dac.gov.in/"
+  },
+  {
+    id: "pkvy",
+    name: "Paramparagat Krishi Vikas Yojana (PKVY)",
+    category: "Organic Farming",
+    scope: "Pan-India",
+    farmerType: "Small & Marginal",
+    summary: "Support for chemical-free cluster-based organic farming and Participatory Guarantee System certification.",
+    eligibility: "Farmers willing to form 20-hectare clusters practicing certified natural farming.",
+    benefits: "₹50,000 per hectare support over 3 years, including direct support for organic seeds and bio-inputs.",
+    documents: "Farmer cluster registration, Land tenancy/ownership records, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://pgsindia-ncof.gov.in/"
+  },
+  {
+    id: "aif",
+    name: "Agriculture Infrastructure Fund (AIF)",
+    category: "Infrastructure",
+    scope: "Pan-India",
+    farmerType: "FPO & Allied",
+    summary: "Medium-to-long term debt financing for post-harvest management infrastructure and community farming assets.",
+    eligibility: "Farmers, Primary Agricultural Credit Societies, FPOs, Agri-entrepreneurs, and Start-ups.",
+    benefits: "3% interest subvention per annum up to ₹2 Crores loan with credit guarantee coverage.",
+    documents: "Project report, Land title/lease deed, Entity registration, Bank loan paperwork.",
+    portal: "https://agriinfra.dac.gov.in/"
+  },
+  {
+    id: "pmmsy",
+    name: "Pradhan Mantri Matsya Sampada Yojana",
+    category: "Dairy & Livestock",
+    scope: "Pan-India",
+    farmerType: "Dairy & Livestock",
+    summary: "Holistic development scheme for fishers, fish farmers, bio-floc setups, and aquaculture ponds.",
+    eligibility: "Fish farmers, self-help groups, fisheries cooperatives, and allied entrepreneurs.",
+    benefits: "40% to 60% governmental financial assistance depending on beneficiary category.",
+    documents: "Land or pond lease document, Water source proof, Identity document [Aadhaar/Voter ID/PAN], Bank passbook.",
+    portal: "https://pmmsy.dof.gov.in/"
+  },
+  {
+    id: "raitha-siri",
+    name: "Raitha Siri Scheme (Millet Incentive)",
+    category: "Income Support",
+    scope: "Karnataka",
+    farmerType: "All Landholders",
+    summary: "Direct financial incentive of ₹10,000 per hectare for cultivating notified minor millets.",
+    eligibility: "Farmers cultivating ragi, foxtail millet, little millet, or kodo millet in Karnataka.",
+    benefits: "₹10,000 per hectare deposited directly into the farmer's bank account (max 2 hectares).",
+    documents: "Karnataka FRUITS Farmer ID (FID), Pahani / RTC, Bank passbook.",
+    portal: "https://fruits.karnataka.gov.in/"
+  },
+  {
+    id: "krishi-bhagya",
+    name: "Krishi Bhagya Scheme",
+    category: "Irrigation",
+    scope: "Karnataka",
+    farmerType: "Small & Marginal",
+    summary: "Subsidies up to 80%–90% for farm ponds (Krishi Honda), polythene lining, and diesel/solar pumpsets.",
+    eligibility: "Dryland and rain-fed farmers residing in designated taluks of Karnataka.",
+    benefits: "Up to 90% subsidy for SC/ST farmers and 80% for general farmers on water harvesting structures.",
+    documents: "Karnataka FRUITS ID, RTC copy, Bank passbook, Land sketch.",
+    portal: "https://raitamitra.karnataka.gov.in/"
+  },
+  {
+    id: "kalaignar-all-village",
+    name: "Kalaignarin All Village Integrated Agri Scheme",
+    category: "Infrastructure",
+    scope: "Tamil Nadu",
+    farmerType: "All Landholders",
+    summary: "Holistic village-level development integrating fallow land revival, borewell assistance, and sapling distribution.",
+    eligibility: "Farmers in selected village panchayats across Tamil Nadu.",
+    benefits: "Free distribution of fruit saplings, vegetable seed kits, farm tools, and irrigation channel restoration.",
+    documents: "Patta / Chitta copy, Identity proof [Aadhaar/Voter ID/PAN], Ration card, Bank passbook.",
+    portal: "https://tnhorticulture.tn.gov.in/"
+  },
+  {
+    id: "mahadbt-tractor",
+    name: "MahaDBT Farm Mechanization Scheme",
+    category: "Machinery",
+    scope: "Maharashtra",
+    farmerType: "Small & Marginal",
+    summary: "Direct subsidy lottery system for purchasing tractors, power weeders, and sprayers via MahaDBT portal.",
+    eligibility: "Farmers holding agricultural land in Maharashtra with verified 7/12 extract.",
+    benefits: "Up to 50% subsidy on power tillers and rotavators credited directly through DBT.",
+    documents: "7/12 and 8-A extract, Quotation from verified implement dealer, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://mahadbt.maharashtra.gov.in/"
+  },
+  {
+    id: "namo-shetkari",
+    name: "Namo Shetkari Maha Samman Nidhi",
+    category: "Income Support",
+    scope: "Maharashtra",
+    farmerType: "All Landholders",
+    summary: "Top-up financial support of ₹6,000 annually provided by the State Government in addition to PM-KISAN.",
+    eligibility: "All beneficiaries eligible under and receiving PM-KISAN instalments in Maharashtra.",
+    benefits: "Additional ₹6,000 per year, bringing total combined annual support to ₹12,000.",
+    documents: "Active PM-KISAN registration, Aadhaar-seeded bank account, 7/12 land record.",
+    portal: "https://mahadbt.maharashtra.gov.in/"
+  },
+  {
+    id: "pm-mandhan",
+    name: "PM Kisan Maandhan Yojana",
+    category: "Pension",
+    scope: "Pan-India",
+    farmerType: "Small & Marginal",
+    summary: "Assured monthly pension of ₹3,000 after attaining the age of 60 for small & marginal farmers.",
+    eligibility: "Farmers aged 18 to 40 years holding cultivable land up to 2 hectares.",
+    benefits: "Guaranteed ₹3,000 monthly pension with 50% matched contribution from the Central Government.",
+    documents: "Identity document [Aadhaar/Voter ID/PAN], Bank account details / Jan Dhan passbook.",
+    portal: "https://maandhan.in/"
+  },
+  {
+    id: "enam",
+    name: "National Agriculture Market (e-NAM)",
+    category: "Marketing",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Pan-India electronic trading portal networking existing APMC mandis for transparent price discovery.",
+    eligibility: "Farmers, traders, and farmer producer organizations registered with participating mandis.",
+    benefits: "Access to nationwide buyers, competitive bidding, assaying facilities, and direct online payment.",
+    documents: "Mandi registration, Bank account passbook, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://enam.gov.in/"
+  },
+  {
+    id: "midh",
+    name: "Mission for Integrated Development of Horticulture (MIDH)",
+    category: "Horticulture",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Comprehensive assistance for polyhouses, shade nets, cold storage, mushroom units, and orchards.",
+    eligibility: "Individual farmers, self-help groups, FPOs, and private entrepreneurs.",
+    benefits: "Capital subsidy between 35% and 50% on protected cultivation structures and nursery setups.",
+    documents: "Land ownership records, Detailed project proposal, Bank passbook, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://midh.gov.in/"
+  },
+  {
+    id: "fpo-10000",
+    name: "Formation of 10,000 FPOs Scheme",
+    category: "Infrastructure",
+    scope: "Pan-India",
+    farmerType: "FPO & Allied",
+    summary: "Institutional and financial support up to ₹18 lakhs per FPO over 3 years for cluster aggregation.",
+    eligibility: "Groups of small, marginal, and landholding farmers forming registered producer companies.",
+    benefits: "Financial grant up to ₹18 Lakhs for management expenses plus matching equity grants up to ₹2,000 per member.",
+    documents: "Company / Society registration certificate, Member farmer registry, Bank account details.",
+    portal: "https://sfacindia.com/"
+  },
+  {
+    id: "subvention",
+    name: "Modified Interest Subvention Scheme (MISS)",
+    category: "Credit & Loans",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Interest subvention on short-term crop loans up to ₹3 lakhs availed through institutional channels.",
+    eligibility: "Farmers availing crop loans through commercial banks, cooperative banks, or RRBs.",
+    benefits: "1.5% interest subvention to lending institutions; additional 3% subvention for prompt repayment (effective rate 4%).",
+    documents: "Kisan Credit Card / Loan passbook, Bank KYC documents.",
+    portal: "https://www.myscheme.gov.in/"
+  },
+  {
+    id: "nbhm",
+    name: "National Beekeeping & Honey Mission (NBHM)",
+    category: "Dairy & Livestock",
+    scope: "Pan-India",
+    farmerType: "FPO & Allied",
+    summary: "Subsidies for bee boxes, honey extraction units, custom bee breeding, and sweet revolution infrastructure.",
+    eligibility: "Small landholders, beekeepers, women self-help groups, and registered beekeeping societies.",
+    benefits: "Subsidies ranging from 40% to 75% on bee colonies, hives, and extraction equipment.",
+    documents: "Beekeeping training certificate, Land/farm verification, Identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://nbb.gov.in/"
+  },
+  {
+    id: "pm-aasha",
+    name: "PM-AASHA (Price Support Scheme)",
+    category: "Marketing",
+    scope: "Pan-India",
+    farmerType: "All Landholders",
+    summary: "Price assurance umbrella ensuring Minimum Support Price (MSP) procurement for pulses, oilseeds, and copra.",
+    eligibility: "Farmers cultivating notified oilseeds and pulses.",
+    benefits: "Direct procurement at official MSP or price deficiency payment when market prices fall below floor rate.",
+    documents: "Farmer portal registration, Sowing / crop confirmation certificate, Bank passbook.",
+    portal: "https://www.india.gov.in/"
+  },
+  {
+    id: "nlr-mission",
+    name: "National Livestock Mission (NLM)",
+    category: "Dairy & Livestock",
+    scope: "Pan-India",
+    farmerType: "Dairy & Livestock",
+    summary: "50% capital subsidy up to ₹50 lakhs for poultry farming, sheep & goat breeding, and fodder banks.",
+    eligibility: "Individual farmers, SHGs, FPOs, and entrepreneurs investing in small ruminants or poultry.",
+    benefits: "50% back-ended capital subsidy on project cost for sheep, goat, piggery, and poultry breeding farms.",
+    documents: "Detailed project report (DPR), Bank loan sanction letter, Land title/lease deed, KYC.",
+    portal: "https://dahd.nic.in/"
+  },
+  {
+    id: "gokul-mission",
+    name: "Rashtriya Gokul Mission",
+    category: "Dairy & Livestock",
+    scope: "Pan-India",
+    farmerType: "Dairy & Livestock",
+    summary: "Support for genetic improvement of indigenous cattle breeds, artificial insemination, and IVF technology.",
+    eligibility: "Dairy farmers, gaushalas, and breeders rearing native cow and buffalo breeds.",
+    benefits: "Subsidized sex-sorted semen doses, free artificial insemination, and breed development incentives.",
+    documents: "Ear-tag registry (Bharat Pashudhan portal), Owner identity proof [Aadhaar/Voter ID/PAN].",
+    portal: "https://dahd.nic.in/"
+  },
+  {
+    id: "karnataka-ganga",
+    name: "Ganga Kalyana Scheme",
+    category: "Irrigation",
+    scope: "Karnataka",
+    farmerType: "Small & Marginal",
+    summary: "Drilling of free borewells, pumpset supply, and electrification for small/marginal farmers from backward classes.",
+    eligibility: "Small and marginal farmers belonging to SC, ST, and backward communities in Karnataka.",
+    benefits: "Complete financial grant for drilling borewells, pump installation, and power energization.",
+    documents: "Caste and Income certificate, Pahani (RTC), Sub-division certificate, Bank passbook.",
+    portal: "https://kmdc.karnataka.gov.in/"
+  }
+];
+
+let selectedCategory = "All";
+
+function initCategories() {
+  const categories = ["All", ...new Set(schemesData.map(s => s.category))];
+  const container = document.getElementById("categoryPills");
+  container.innerHTML = "";
+
+  categories.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.className = `pill-btn ${cat === selectedCategory ? 'active' : ''}`;
+    btn.textContent = cat;
+    btn.onclick = () => {
+      selectedCategory = cat;
+      document.querySelectorAll(".pill-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderSchemes();
+    };
+    container.appendChild(btn);
+  });
+}
+
+function renderSchemes() {
+  const query = document.getElementById("schemeSearch").value.trim().toLowerCase();
+  const selectedState = document.getElementById("stateFilter").value;
+  const selectedFarmer = document.getElementById("farmerTypeFilter").value;
+
+  const filtered = schemesData.filter(s => {
+    const matchesCat = selectedCategory === "All" || s.category === selectedCategory;
+    const matchesState = selectedState === "All" || s.scope === "Pan-India" || s.scope === selectedState;
+    const matchesFarmer = selectedFarmer === "All" || s.farmerType === "All Landholders" || s.farmerType === selectedFarmer;
+    const matchesQuery = (s.name + " " + s.summary + " " + s.benefits + " " + s.category).toLowerCase().includes(query);
+
+    return matchesCat && matchesState && matchesFarmer && matchesQuery;
+  });
+
+  document.getElementById("resultsCount").textContent = `Showing ${filtered.length} of ${schemesData.length} active programmes`;
+
+  const grid = document.getElementById("schemesGrid");
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align: center; padding: 36px; background: white; border-radius: 12px; border: 1px solid var(--card-border);">
+        <h3 style="font-size: 15px; color: var(--primary);">No matching schemes found</h3>
+        <p style="color: var(--muted); margin-top: 6px; font-size: 12px;">Try clearing your search query or setting the location/farmer filter to 'All'.</p>
+      </div>
+    `;
+    return;
+  }
+
+  filtered.forEach(scheme => {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="badge-strip">
+        <span class="badge">${scheme.category}</span>
+        <span class="badge badge-state">${scheme.scope}</span>
+      </div>
+      <h3>${scheme.name}</h3>
+      <p>${scheme.summary}</p>
+      <div class="card-footer">
+        <small style="color: var(--muted); font-size: 10.5px;">${scheme.farmerType}</small>
+        <button class="btn-details" onclick="openDetails('${scheme.id}')">View Details →</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openDetails(schemeId) {
+  const scheme = schemesData.find(s => s.id === schemeId);
+  if (!scheme) return;
+
+  const modal = document.getElementById("modalDetails");
+  modal.innerHTML = `
+    <div class="badge-strip" style="margin-bottom: 6px;">
+      <span class="badge">${scheme.category}</span>
+      <span class="badge badge-state">${scheme.scope}</span>
+    </div>
+    <h2 style="font-size: 18px; color: var(--primary); margin-bottom: 12px;">${scheme.name}</h2>
+    
+    <div class="modal-section">
+      <b>Programme Benefits</b>
+      <p>${scheme.benefits}</p>
+    </div>
+
+    <div class="modal-section">
+      <b>Eligibility Criteria</b>
+      <p>${scheme.eligibility}</p>
+    </div>
+
+    <div class="modal-section">
+      <b>Required Documents</b>
+      <p>${scheme.documents}</p>
+    </div>
+
+    <a class="apply-btn" href="${scheme.portal}" target="_blank" rel="noopener noreferrer">
+      Visit Official Portal ↗
+    </a>
+  `;
+
+  document.getElementById("schemeModal").classList.add("show");
+}
+
+function closeModal() {
+  document.getElementById("schemeModal").classList.remove("show");
+}
+
+document.getElementById("schemeSearch").addEventListener("input", renderSchemes);
+document.getElementById("stateFilter").addEventListener("change", renderSchemes);
+document.getElementById("farmerTypeFilter").addEventListener("change", renderSchemes);
+
+initCategories();
+renderSchemes();
+</script>
+
+</body>
+</html>
